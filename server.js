@@ -10,8 +10,12 @@ const io = new Server(server);
 
 app.use(express.static(path.join(__dirname, 'public')));
 
-// lobbies[code] = { host, players, gameMode, status, submissions, variableSpec }
+// lobbies[code] = { host, players, gameMode, status, submissions, variableSpec, aiPlayerIds }
 const lobbies = {};
+
+// Unique fake socket ID for AI players
+let aiCounter = 0;
+function makeAiId() { return `__ai_${++aiCounter}`; }
 
 function generateCode() {
   return Math.random().toString(36).substring(2, 8).toUpperCase();
@@ -31,6 +35,7 @@ io.on('connection', (socket) => {
       status: 'waiting',
       submissions: {},
       variableSpec: null,
+      aiPlayerIds: [],
     };
 
     socket.join(code);
@@ -71,7 +76,6 @@ io.on('connection', (socket) => {
     socket.data.lobbyCode = code;
     socket.data.username = username;
 
-    // Tell the joining player their full lobby state
     socket.emit('lobbyJoined', {
       code,
       players: lobby.players,
@@ -79,7 +83,6 @@ io.on('connection', (socket) => {
       gameMode: lobby.gameMode,
     });
 
-    // Tell everyone else the player list updated
     socket.to(code).emit('playerListUpdated', { players: lobby.players });
   });
 
@@ -97,9 +100,18 @@ io.on('connection', (socket) => {
     const { lobbyCode } = socket.data;
     const lobby = lobbies[lobbyCode];
     if (!lobby || lobby.host !== socket.id || !lobby.gameMode) return;
-    if (lobby.players.length < 2) {
-      socket.emit('joinError', { message: 'Need at least 2 players to start.' });
-      return;
+
+    const humanCount = lobby.players.length;
+
+    // Solo mode: fill up to 2 total players with 1 AI
+    // You can increase NPC_COUNT to add more AI players
+    const NPC_COUNT = humanCount === 1 ? 1 : 0;
+
+    for (let i = 0; i < NPC_COUNT; i++) {
+      const aiId   = makeAiId();
+      const aiName = `NPC_${i + 1}`;
+      lobby.players.push({ id: aiId, name: aiName, isAI: true });
+      lobby.aiPlayerIds.push(aiId);
     }
 
     lobby.status = 'playing';
@@ -108,9 +120,10 @@ io.on('connection', (socket) => {
     const spec = engine.pickRandomSpec();
     lobby.variableSpec = spec;
 
+    // Send updated player list so client shows NPC in the roster
+    io.to(lobbyCode).emit('playerListUpdated', { players: lobby.players });
     io.to(lobbyCode).emit('gameStarted', { mode: lobby.gameMode });
 
-    // Small delay so the screen transition happens before game data arrives
     setTimeout(() => {
       io.to(lobbyCode).emit('roundStarted', {
         specCode: spec.code,
@@ -127,35 +140,24 @@ io.on('connection', (socket) => {
     const lobby = lobbies[lobbyCode];
     if (!lobby || lobby.status !== 'playing') return;
     if (typeof code !== 'string') return;
-
-    // Only record first submission per player
     if (lobby.submissions[socket.id] !== undefined) return;
 
     lobby.submissions[socket.id] = code;
 
-    const submitted = Object.keys(lobby.submissions).length;
+    const realSubmitted = Object.keys(lobby.submissions).length;
     const total = lobby.players.length;
 
-    io.to(lobbyCode).emit('submissionProgress', { submitted, total });
+    io.to(lobbyCode).emit('submissionProgress', { submitted: realSubmitted, total });
 
-    if (submitted === total) {
-      // Build submissions in player order
-      const submissions = lobby.players.map(p => ({
-        playerName: p.name,
-        code: lobby.submissions[p.id] || '// (no code submitted)',
-      }));
+    // If all human players have submitted, generate AI submissions then reveal
+    const allHumansSubmitted = lobby.players
+      .filter(p => !p.isAI)
+      .every(p => lobby.submissions[p.id] !== undefined);
 
-      const assembled = engine.assembleProgram(lobby.variableSpec.code, submissions);
-      const result = engine.executeProgram(assembled);
-
-      lobby.status = 'results';
-
-      io.to(lobbyCode).emit('revealResults', {
-        assembled,
-        submissions,
-        output: result.output,
-        error: result.error,
-      });
+    if (allHumansSubmitted && lobby.aiPlayerIds.length > 0) {
+      generateAISubmissionsAndReveal(lobby, lobbyCode);
+    } else if (realSubmitted === total) {
+      revealResults(lobby, lobbyCode);
     }
   });
 
@@ -163,6 +165,54 @@ io.on('connection', (socket) => {
   socket.on('leaveLobby', () => handleLeave(socket));
   socket.on('disconnect', () => handleLeave(socket));
 });
+
+// ── AI Submissions ────────────────────────────────────────────────────────────
+async function generateAISubmissionsAndReveal(lobby, lobbyCode) {
+  // Notify players that AI is "thinking"
+  io.to(lobbyCode).emit('aiThinking', { count: lobby.aiPlayerIds.length });
+
+  try {
+    // Generate all AI functions in parallel
+    await Promise.all(
+      lobby.aiPlayerIds.map(async (aiId) => {
+        const aiName = lobby.players.find(p => p.id === aiId)?.name || 'NPC';
+        const aiCode = await engine.generateAIFunction(lobby.variableSpec, aiName);
+        lobby.submissions[aiId] = aiCode;
+      })
+    );
+  } catch (err) {
+    console.error('[AI generation error]', err);
+    // Fallback: give each AI a placeholder function
+    lobby.aiPlayerIds.forEach(aiId => {
+      if (!lobby.submissions[aiId]) {
+        lobby.submissions[aiId] = `function npc_fallback() {\n  log.push('NPC had a brain freeze.');\n}`;
+      }
+    });
+  }
+
+  revealResults(lobby, lobbyCode);
+}
+
+// ── Reveal Results ────────────────────────────────────────────────────────────
+function revealResults(lobby, lobbyCode) {
+  const submissions = lobby.players.map(p => ({
+    playerName: p.name,
+    isAI: !!p.isAI,
+    code: lobby.submissions[p.id] || '// (no code submitted)',
+  }));
+
+  const assembled = engine.assembleProgram(lobby.variableSpec.code, submissions);
+  const result    = engine.executeProgram(assembled);
+
+  lobby.status = 'results';
+
+  io.to(lobbyCode).emit('revealResults', {
+    assembled,
+    submissions,
+    output: result.output,
+    error:  result.error,
+  });
+}
 
 // ── Handle Leave / Disconnect ─────────────────────────────────────────────────
 function handleLeave(socket) {
@@ -179,7 +229,6 @@ function handleLeave(socket) {
     return;
   }
 
-  // Promote next player to host if host left
   if (lobby.host === socket.id) {
     lobby.host = lobby.players[0].id;
     io.to(lobby.host).emit('promotedToHost');

@@ -4,6 +4,8 @@
   <meta charset="UTF-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
   <title>NPC Hacks</title>
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link href="https://fonts.googleapis.com/css2?family=JetBrains+Mono:wght@400;700&family=Syne:wght@700;800&display=swap" rel="stylesheet">
   <style>
     * { box-sizing: border-box; margin: 0; padding: 0; }
 
@@ -25,6 +27,7 @@
       animation: fadeIn 0.2s ease;
     }
     .screen.active { display: block; }
+    #screen-results { max-width: 720px; }
 
     @keyframes fadeIn {
       from { opacity: 0; transform: translateY(8px); }
@@ -39,6 +42,7 @@
     }
 
     h1 {
+      font-family: 'Syne', sans-serif;
       font-size: 2.4rem;
       font-weight: 800;
       letter-spacing: -1px;
@@ -49,23 +53,10 @@
       margin-bottom: 4px;
     }
 
-    .tagline {
-      color: #6b7280;
-      font-size: 0.9rem;
-      margin-bottom: 32px;
-    }
+    .tagline { color: #6b7280; font-size: 0.9rem; margin-bottom: 32px; }
 
-    h2 {
-      font-size: 1.4rem;
-      font-weight: 700;
-      margin-bottom: 4px;
-    }
-
-    .subtitle {
-      color: #6b7280;
-      font-size: 0.85rem;
-      margin-bottom: 24px;
-    }
+    h2 { font-size: 1.4rem; font-weight: 700; margin-bottom: 4px; }
+    .subtitle { color: #6b7280; font-size: 0.85rem; margin-bottom: 24px; }
 
     label {
       display: block;
@@ -105,23 +96,10 @@
     }
     .btn:active { transform: scale(0.98); }
     .btn:disabled { opacity: 0.4; cursor: not-allowed; transform: none; }
-
-    .btn-primary {
-      background: linear-gradient(135deg, #7c3aed, #3b82f6);
-      color: #fff;
-    }
-    .btn-secondary {
-      background: #2a2a4a;
-      color: #e8e8f0;
-    }
-    .btn-danger {
-      background: #7f1d1d;
-      color: #fca5a5;
-    }
-    .btn-success {
-      background: linear-gradient(135deg, #059669, #10b981);
-      color: #fff;
-    }
+    .btn-primary  { background: linear-gradient(135deg, #7c3aed, #3b82f6); color: #fff; }
+    .btn-secondary { background: #2a2a4a; color: #e8e8f0; }
+    .btn-danger   { background: #7f1d1d; color: #fca5a5; }
+    .btn-success  { background: linear-gradient(135deg, #059669, #10b981); color: #fff; }
 
     .field { margin-bottom: 18px; }
 
@@ -152,7 +130,7 @@
     }
     .error-msg.show { display: block; }
 
-    /* Lobby screen */
+    /* ── Lobby ── */
     .lobby-header {
       display: flex;
       align-items: flex-start;
@@ -160,7 +138,6 @@
       margin-bottom: 24px;
       gap: 12px;
     }
-
     .lobby-code-box {
       background: #0f0f1a;
       border: 1px solid #2a2a4a;
@@ -168,28 +145,10 @@
       padding: 10px 16px;
       text-align: center;
     }
-    .lobby-code-label {
-      font-size: 0.7rem;
-      color: #6b7280;
-      text-transform: uppercase;
-      letter-spacing: 0.1em;
-      margin-bottom: 2px;
-    }
-    .lobby-code-value {
-      font-size: 1.6rem;
-      font-weight: 800;
-      letter-spacing: 4px;
-      color: #a78bfa;
-      font-family: monospace;
-    }
-    .copy-hint {
-      font-size: 0.65rem;
-      color: #4b5563;
-      margin-top: 2px;
-      cursor: pointer;
-    }
+    .lobby-code-label { font-size: 0.7rem; color: #6b7280; text-transform: uppercase; letter-spacing: 0.1em; margin-bottom: 2px; }
+    .lobby-code-value { font-size: 1.6rem; font-weight: 800; letter-spacing: 4px; color: #a78bfa; font-family: monospace; }
+    .copy-hint { font-size: 0.65rem; color: #4b5563; margin-top: 2px; cursor: pointer; }
     .copy-hint:hover { color: #9ca3af; }
-
     .host-badge {
       background: #fef08a22;
       border: 1px solid #ca8a04;
@@ -200,7 +159,6 @@
       border-radius: 20px;
       white-space: nowrap;
     }
-
     .section-label {
       font-size: 0.75rem;
       font-weight: 700;
@@ -209,7 +167,6 @@
       letter-spacing: 0.08em;
       margin-bottom: 10px;
     }
-
     .player-list {
       list-style: none;
       display: flex;
@@ -241,20 +198,9 @@
       flex-shrink: 0;
     }
     .player-name { flex: 1; }
-    .player-host-tag {
-      font-size: 0.65rem;
-      color: #fde047;
-      font-weight: 600;
-    }
+    .player-host-tag { font-size: 0.65rem; color: #fde047; font-weight: 600; }
 
-    /* Game mode grid */
-    .mode-grid {
-      display: grid;
-      grid-template-columns: 1fr 1fr;
-      gap: 10px;
-      margin-bottom: 20px;
-    }
-
+    .mode-grid { display: grid; grid-template-columns: 1fr 1fr; gap: 10px; margin-bottom: 20px; }
     .mode-card {
       background: #0f0f1a;
       border: 2px solid #2a2a4a;
@@ -266,8 +212,6 @@
     }
     .mode-card:hover { border-color: #7c3aed44; background: #1a1a2e; }
     .mode-card.selected { border-color: #7c3aed; background: #1e1040; }
-    .mode-card.locked { cursor: not-allowed; opacity: 0.5; }
-
     .mode-icon { font-size: 1.8rem; margin-bottom: 6px; }
     .mode-name { font-size: 0.85rem; font-weight: 700; color: #e8e8f0; }
     .mode-desc { font-size: 0.7rem; color: #6b7280; margin-top: 3px; }
@@ -291,26 +235,193 @@
     }
     @keyframes spin { to { transform: rotate(360deg); } }
 
-    /* Game placeholder screen */
-    .game-banner {
-      text-align: center;
-      padding: 40px 20px;
+    /* ── Writing screen ── */
+    .spec-box {
+      background: #0a0a14;
+      border: 1px solid #2a2a4a;
+      border-radius: 10px;
+      padding: 14px 16px;
+      margin-bottom: 16px;
     }
-    .game-banner .icon { font-size: 4rem; margin-bottom: 16px; }
-    .game-banner h2 { margin-bottom: 8px; }
-    .game-banner p { color: #6b7280; font-size: 0.9rem; margin-bottom: 24px; }
-    .mode-pill {
-      display: inline-block;
-      background: linear-gradient(135deg, #7c3aed, #3b82f6);
-      color: #fff;
+    .spec-label {
+      font-size: 0.7rem;
       font-weight: 700;
-      padding: 6px 18px;
-      border-radius: 20px;
-      font-size: 0.9rem;
-      margin-bottom: 24px;
+      color: #7c3aed;
+      text-transform: uppercase;
+      letter-spacing: 0.1em;
+      margin-bottom: 6px;
+    }
+    .spec-description {
+      font-size: 0.85rem;
+      color: #9ca3af;
+      margin-bottom: 10px;
+    }
+    .spec-code {
+      font-family: 'JetBrains Mono', monospace;
+      font-size: 0.78rem;
+      color: #a5f3fc;
+      white-space: pre;
+      overflow-x: auto;
+      line-height: 1.6;
     }
 
-    /* Toast */
+    .code-editor {
+      width: 100%;
+      min-height: 160px;
+      background: #0a0a14;
+      border: 1px solid #2a2a4a;
+      border-radius: 10px;
+      color: #e8e8f0;
+      font-family: 'JetBrains Mono', monospace;
+      font-size: 0.85rem;
+      padding: 14px 16px;
+      outline: none;
+      resize: vertical;
+      line-height: 1.6;
+      transition: border-color 0.15s;
+      margin-bottom: 14px;
+    }
+    .code-editor:focus { border-color: #7c3aed; }
+
+    .timer-bar-wrap {
+      background: #0a0a14;
+      border-radius: 6px;
+      height: 6px;
+      overflow: hidden;
+      margin-bottom: 14px;
+    }
+    .timer-bar {
+      height: 100%;
+      background: linear-gradient(90deg, #7c3aed, #3b82f6);
+      transition: width 1s linear, background 0.5s;
+      width: 100%;
+    }
+    .timer-bar.urgent { background: linear-gradient(90deg, #ef4444, #f97316); }
+
+    .submit-row {
+      display: flex;
+      align-items: center;
+      gap: 12px;
+    }
+    .timer-text {
+      font-size: 0.85rem;
+      color: #6b7280;
+      white-space: nowrap;
+    }
+    .timer-text.urgent { color: #ef4444; font-weight: 700; }
+
+    .submitted-badge {
+      display: inline-flex;
+      align-items: center;
+      gap: 6px;
+      background: #052e16;
+      border: 1px solid #15803d;
+      color: #86efac;
+      font-size: 0.85rem;
+      font-weight: 700;
+      padding: 10px 16px;
+      border-radius: 10px;
+      width: 100%;
+      justify-content: center;
+    }
+
+    /* ── Waiting-for-others screen ── */
+    .progress-players {
+      display: flex;
+      flex-direction: column;
+      gap: 8px;
+      margin: 24px 0;
+    }
+    .progress-player {
+      display: flex;
+      align-items: center;
+      gap: 10px;
+      background: #0f0f1a;
+      border: 1px solid #2a2a4a;
+      border-radius: 8px;
+      padding: 10px 14px;
+      font-size: 0.9rem;
+      transition: border-color 0.3s;
+    }
+    .progress-player.done { border-color: #15803d; }
+    .progress-status { font-size: 1rem; margin-left: auto; }
+    .big-spinner {
+      width: 48px;
+      height: 48px;
+      border: 3px solid #2a2a4a;
+      border-top-color: #7c3aed;
+      border-radius: 50%;
+      animation: spin 1s linear infinite;
+      margin: 0 auto 20px;
+    }
+
+    /* ── Results screen ── */
+    .results-header {
+      text-align: center;
+      margin-bottom: 28px;
+    }
+    .results-header .icon { font-size: 3rem; margin-bottom: 8px; }
+
+    .submissions-list { display: flex; flex-direction: column; gap: 12px; margin-bottom: 24px; }
+    .submission-card {
+      background: #0f0f1a;
+      border: 1px solid #2a2a4a;
+      border-radius: 12px;
+      overflow: hidden;
+    }
+    .submission-header {
+      display: flex;
+      align-items: center;
+      gap: 10px;
+      padding: 10px 14px;
+      background: #0a0a14;
+      border-bottom: 1px solid #2a2a4a;
+    }
+    .submission-name { font-size: 0.85rem; font-weight: 700; }
+    .submission-code {
+      font-family: 'JetBrains Mono', monospace;
+      font-size: 0.78rem;
+      color: #c4b5fd;
+      padding: 12px 14px;
+      white-space: pre;
+      overflow-x: auto;
+      line-height: 1.6;
+    }
+
+    .output-box {
+      background: #0a0a14;
+      border: 1px solid #2a2a4a;
+      border-radius: 12px;
+      padding: 16px;
+      margin-bottom: 20px;
+    }
+    .output-label {
+      font-size: 0.75rem;
+      font-weight: 700;
+      color: #6b7280;
+      text-transform: uppercase;
+      letter-spacing: 0.08em;
+      margin-bottom: 10px;
+    }
+    .output-lines { display: flex; flex-direction: column; gap: 4px; }
+    .output-line {
+      font-family: 'JetBrains Mono', monospace;
+      font-size: 0.82rem;
+      color: #86efac;
+      padding: 3px 0;
+      border-bottom: 1px solid #1a1a2e;
+    }
+    .output-error {
+      font-family: 'JetBrains Mono', monospace;
+      font-size: 0.85rem;
+      color: #fca5a5;
+      background: #450a0a;
+      border-radius: 8px;
+      padding: 10px 12px;
+    }
+    .output-empty { font-size: 0.85rem; color: #4b5563; font-style: italic; }
+
+    /* ── Toast ── */
     .toast {
       position: fixed;
       bottom: 24px;
@@ -329,17 +440,18 @@
     }
     .toast.show { transform: translateX(-50%) translateY(0); }
 
-    .mt-8 { margin-top: 8px; }
+    .mt-8  { margin-top: 8px; }
     .mt-12 { margin-top: 12px; }
+    .mt-16 { margin-top: 16px; }
   </style>
 </head>
 <body>
 
-<!-- LOGIN -->
+<!-- ═══════════════ LOGIN ═══════════════ -->
 <div id="screen-login" class="screen active">
   <div class="card">
     <h1>NPC Hacks</h1>
-    <p class="tagline">A social drawing & guessing game</p>
+    <p class="tagline">A social coding chaos game</p>
     <div class="field">
       <label for="login-username">Your name</label>
       <input type="text" id="login-username" placeholder="Enter a display name" maxlength="20" autocomplete="off" />
@@ -349,7 +461,7 @@
   </div>
 </div>
 
-<!-- MAIN MENU -->
+<!-- ═══════════════ MAIN MENU ═══════════════ -->
 <div id="screen-menu" class="screen">
   <div class="card">
     <h2>Welcome, <span id="menu-username"></span></h2>
@@ -366,13 +478,13 @@
   </div>
 </div>
 
-<!-- LOBBY -->
+<!-- ═══════════════ LOBBY ═══════════════ -->
 <div id="screen-lobby" class="screen">
   <div class="card">
     <div class="lobby-header">
       <div>
         <h2 style="margin-bottom:0">Lobby</h2>
-        <p class="subtitle" style="margin-bottom:0" id="lobby-status-text">Waiting for players…</p>
+        <p class="subtitle" style="margin-bottom:0">Waiting for players…</p>
       </div>
       <div style="display:flex;flex-direction:column;align-items:flex-end;gap:6px">
         <div class="lobby-code-box" onclick="copyCode()" title="Click to copy">
@@ -387,14 +499,12 @@
     <div class="section-label">Players (<span id="player-count">0</span>/12)</div>
     <ul class="player-list" id="player-list"></ul>
 
-    <!-- Host: game mode picker -->
     <div id="host-controls" style="display:none">
       <div class="section-label">Game Mode</div>
       <div class="mode-grid" id="mode-grid"></div>
       <button class="btn btn-success" id="start-btn" onclick="handleStart()" disabled>Start Game</button>
     </div>
 
-    <!-- Guest: waiting message -->
     <div id="guest-controls" style="display:none">
       <div id="guest-mode-display" class="waiting-msg">
         <span class="spinner"></span> Waiting for the host to pick a game mode…
@@ -405,17 +515,77 @@
   </div>
 </div>
 
-<!-- GAME (placeholder) -->
-<div id="screen-game" class="screen">
+<!-- ═══════════════ WRITING ═══════════════ -->
+<div id="screen-writing" class="screen">
   <div class="card">
-    <div class="game-banner">
-      <div class="icon">🎮</div>
-      <h2>Game Starting!</h2>
-      <p>Mode selected:</p>
-      <div class="mode-pill" id="game-mode-pill">—</div>
-      <p>The actual game content goes here.<br>This is a placeholder screen.</p>
-      <button class="btn btn-secondary" onclick="handleBackToMenu()" style="max-width:200px;margin:0 auto">Back to Menu</button>
+    <h2>Write Your Function</h2>
+    <p class="subtitle" id="writing-description">…</p>
+
+    <div class="spec-box">
+      <div class="spec-label">⚙️ Shared Variables — available to everyone</div>
+      <div class="spec-description" id="spec-description-text"></div>
+      <pre class="spec-code" id="spec-code-display"></pre>
     </div>
+
+    <div class="field">
+      <label>Your function (JavaScript)</label>
+      <textarea
+        id="code-input"
+        class="code-editor"
+        placeholder="function myFunction() {
+  // write your code here
+  log.push('hello from my function!');
+}"
+        spellcheck="false"
+      ></textarea>
+    </div>
+
+    <div class="timer-bar-wrap">
+      <div class="timer-bar" id="timer-bar"></div>
+    </div>
+
+    <div class="submit-row">
+      <span class="timer-text" id="timer-text">2:00</span>
+      <button class="btn btn-primary" id="submit-btn" onclick="handleSubmitCode()" style="flex:1">
+        Submit Function
+      </button>
+    </div>
+
+    <div id="submitted-indicator" style="display:none" class="mt-12">
+      <div class="submitted-badge">✅ Submitted! Waiting for others…</div>
+    </div>
+  </div>
+</div>
+
+<!-- ═══════════════ WAITING FOR OTHERS ═══════════════ -->
+<div id="screen-waiting" class="screen">
+  <div class="card" style="text-align:center">
+    <div class="big-spinner"></div>
+    <h2>Waiting for everyone…</h2>
+    <p class="subtitle" id="waiting-count-text">0 / 0 submitted</p>
+    <div class="progress-players" id="progress-players"></div>
+  </div>
+</div>
+
+<!-- ═══════════════ RESULTS ═══════════════ -->
+<div id="screen-results" class="screen">
+  <div class="card">
+    <div class="results-header">
+      <div class="icon">🧟</div>
+      <h2>The Frankencode Lives</h2>
+      <p class="subtitle">Here's what everyone built — together, without knowing it.</p>
+    </div>
+
+    <div class="section-label">Each player's function</div>
+    <div class="submissions-list" id="submissions-list"></div>
+
+    <div class="output-box">
+      <div class="output-label">▶ Execution Output</div>
+      <div id="output-content"></div>
+    </div>
+
+    <button class="btn btn-primary" onclick="handlePlayAgain()">Play Again (New Lobby)</button>
+    <button class="btn btn-secondary mt-8" onclick="handleBackToMenu()">Back to Menu</button>
   </div>
 </div>
 
@@ -423,28 +593,40 @@
 
 <script src="/socket.io/socket.io.js"></script>
 <script>
+  // ── Constants ────────────────────────────────────────────────────────────────
   const AVATAR_COLORS = [
     '#7c3aed','#3b82f6','#10b981','#f59e0b','#ef4444',
     '#ec4899','#06b6d4','#84cc16','#f97316','#8b5cf6'
   ];
 
   const GAME_MODES = [
-    { id: 'classic',    name: 'Classic',     icon: '✏️',  desc: 'Draw it, guess it' },
-    { id: 'speed',      name: 'Speed Round', icon: '⚡',  desc: 'Race the clock' },
-    { id: 'chaos',      name: 'Chaos Mode',  icon: '🌀',  desc: 'Expect the unexpected' },
-    { id: 'team',       name: 'Team Play',   icon: '🤝',  desc: 'Collaborate to win' },
+    { id: 'classic',  name: 'Classic',      icon: '✏️',  desc: 'Draw it, guess it' },
+    { id: 'speed',    name: 'Speed Round',  icon: '⚡',  desc: 'Race the clock' },
+    { id: 'chaos',    name: 'Chaos Mode',   icon: '🌀',  desc: 'Expect the unexpected' },
+    { id: 'team',     name: 'Team Play',    icon: '🤝',  desc: 'Collaborate to win' },
   ];
 
-  const socket = io();
-  let state = { username: '', isHost: false, lobbyCode: '', selectedMode: null };
+  const ROUND_DURATION_SECS = 120; // 2 minutes to write code
 
-  // ── Screens ──────────────────────────────────────────────────────────────
+  const socket = io();
+  let state = {
+    username: '',
+    isHost: false,
+    lobbyCode: '',
+    selectedMode: null,
+    players: [],       // [{ name }]
+    timerInterval: null,
+    timerSecsLeft: ROUND_DURATION_SECS,
+    submitted: false,
+  };
+
+  // ── Screens ──────────────────────────────────────────────────────────────────
   function showScreen(id) {
     document.querySelectorAll('.screen').forEach(s => s.classList.remove('active'));
     document.getElementById('screen-' + id).classList.add('active');
   }
 
-  // ── Toast ─────────────────────────────────────────────────────────────────
+  // ── Toast ─────────────────────────────────────────────────────────────────────
   let toastTimer;
   function showToast(msg) {
     const t = document.getElementById('toast');
@@ -454,7 +636,7 @@
     toastTimer = setTimeout(() => t.classList.remove('show'), 2500);
   }
 
-  // ── Login ─────────────────────────────────────────────────────────────────
+  // ── Login ─────────────────────────────────────────────────────────────────────
   document.getElementById('login-username').addEventListener('keydown', e => {
     if (e.key === 'Enter') handleLogin();
   });
@@ -469,14 +651,12 @@
     showScreen('menu');
   }
 
-  // ── Menu ──────────────────────────────────────────────────────────────────
+  // ── Menu ──────────────────────────────────────────────────────────────────────
   document.getElementById('join-code').addEventListener('keydown', e => {
     if (e.key === 'Enter') handleJoin();
   });
 
-  function handleCreate() {
-    socket.emit('createLobby', { username: state.username });
-  }
+  function handleCreate() { socket.emit('createLobby', { username: state.username }); }
 
   function handleJoin() {
     const code = document.getElementById('join-code').value.trim().toUpperCase();
@@ -486,32 +666,33 @@
     socket.emit('joinLobby', { username: state.username, code });
   }
 
-  // ── Lobby ─────────────────────────────────────────────────────────────────
+  // ── Lobby ─────────────────────────────────────────────────────────────────────
   function renderLobby({ code, players, isHost, gameMode }) {
-    state.isHost    = isHost;
-    state.lobbyCode = code;
+    state.isHost       = isHost;
+    state.lobbyCode    = code;
     state.selectedMode = gameMode;
+    state.players      = players;
 
     document.getElementById('lobby-code-display').textContent = code;
-    document.getElementById('host-badge').style.display = isHost ? 'inline-block' : 'none';
+    document.getElementById('host-badge').style.display   = isHost ? 'inline-block' : 'none';
     document.getElementById('host-controls').style.display = isHost ? 'block' : 'none';
     document.getElementById('guest-controls').style.display = isHost ? 'none' : 'block';
 
     if (isHost) renderModeGrid();
-
     updatePlayerList(players);
     updateStartButton();
-    if (gameMode) applyModeToGuest(gameMode);
+    if (gameMode && !isHost) applyModeToGuest(gameMode);
 
     showScreen('lobby');
   }
 
   function updatePlayerList(players) {
+    state.players = players;
     const list = document.getElementById('player-list');
     list.innerHTML = '';
     document.getElementById('player-count').textContent = players.length;
     players.forEach((p, i) => {
-      const color = AVATAR_COLORS[i % AVATAR_COLORS.length];
+      const color   = AVATAR_COLORS[i % AVATAR_COLORS.length];
       const initial = p.name.charAt(0).toUpperCase();
       const isYou   = p.name === state.username;
       const li = document.createElement('li');
@@ -531,11 +712,7 @@
     GAME_MODES.forEach(mode => {
       const div = document.createElement('div');
       div.className = 'mode-card' + (state.selectedMode === mode.id ? ' selected' : '');
-      div.innerHTML = `
-        <div class="mode-icon">${mode.icon}</div>
-        <div class="mode-name">${mode.name}</div>
-        <div class="mode-desc">${mode.desc}</div>
-      `;
+      div.innerHTML = `<div class="mode-icon">${mode.icon}</div><div class="mode-name">${mode.name}</div><div class="mode-desc">${mode.desc}</div>`;
       div.addEventListener('click', () => selectMode(mode.id));
       grid.appendChild(div);
     });
@@ -573,41 +750,166 @@
 
   function handleLeave() {
     socket.emit('leaveLobby');
-    state.selectedMode = null;
-    state.lobbyCode = '';
-    state.isHost = false;
-    document.getElementById('join-code').value = '';
+    resetState();
     showScreen('menu');
   }
 
-  // ── Game ──────────────────────────────────────────────────────────────────
+  // ── Writing screen ─────────────────────────────────────────────────────────
+  function startWritingScreen({ specCode, description, totalPlayers }) {
+    state.submitted = false;
+
+    document.getElementById('spec-code-display').textContent = specCode;
+    document.getElementById('writing-description').textContent = description;
+    document.getElementById('code-input').value = '';
+    document.getElementById('code-input').disabled = false;
+    document.getElementById('submit-btn').disabled = false;
+    document.getElementById('submit-btn').style.display = 'block';
+    document.getElementById('submitted-indicator').style.display = 'none';
+
+    startTimer();
+    showScreen('writing');
+  }
+
+  function startTimer() {
+    clearInterval(state.timerInterval);
+    state.timerSecsLeft = ROUND_DURATION_SECS;
+    updateTimerUI();
+
+    state.timerInterval = setInterval(() => {
+      state.timerSecsLeft--;
+      updateTimerUI();
+      if (state.timerSecsLeft <= 0) {
+        clearInterval(state.timerInterval);
+        if (!state.submitted) handleSubmitCode(); // auto-submit on timeout
+      }
+    }, 1000);
+  }
+
+  function updateTimerUI() {
+    const s = state.timerSecsLeft;
+    const mins = Math.floor(s / 60);
+    const secs = String(s % 60).padStart(2, '0');
+    const pct  = (s / ROUND_DURATION_SECS) * 100;
+    const urgent = s <= 20;
+
+    const bar  = document.getElementById('timer-bar');
+    const text = document.getElementById('timer-text');
+    bar.style.width = pct + '%';
+    bar.className = 'timer-bar' + (urgent ? ' urgent' : '');
+    text.textContent = `${mins}:${secs}`;
+    text.className = 'timer-text' + (urgent ? ' urgent' : '');
+  }
+
+  function handleSubmitCode() {
+    if (state.submitted) return;
+    const code = document.getElementById('code-input').value.trim();
+    state.submitted = true;
+    clearInterval(state.timerInterval);
+
+    socket.emit('submitCode', { code: code || '// (no code submitted)' });
+
+    document.getElementById('submit-btn').style.display = 'none';
+    document.getElementById('submitted-indicator').style.display = 'block';
+    document.getElementById('code-input').disabled = true;
+  }
+
+  // ── Waiting screen ─────────────────────────────────────────────────────────
+  function updateWaitingScreen({ submitted, total }) {
+    document.getElementById('waiting-count-text').textContent = `${submitted} / ${total} submitted`;
+
+    const container = document.getElementById('progress-players');
+    // Mark players as done sequentially (we don't know who submitted, just count)
+    const items = container.querySelectorAll('.progress-player');
+    items.forEach((el, i) => {
+      if (i < submitted) el.classList.add('done');
+      el.querySelector('.progress-status').textContent = i < submitted ? '✅' : '⏳';
+    });
+  }
+
+  function buildWaitingPlayerList(players) {
+    const container = document.getElementById('progress-players');
+    container.innerHTML = '';
+    players.forEach((p, i) => {
+      const color = AVATAR_COLORS[i % AVATAR_COLORS.length];
+      const div = document.createElement('div');
+      div.className = 'progress-player';
+      div.innerHTML = `
+        <div class="player-avatar" style="background:${color}22;color:${color};border:1px solid ${color}44;width:28px;height:28px;border-radius:50%;display:flex;align-items:center;justify-content:center;font-weight:700;font-size:.75rem;flex-shrink:0">${p.name.charAt(0).toUpperCase()}</div>
+        <span>${escapeHtml(p.name)}</span>
+        <span class="progress-status">⏳</span>
+      `;
+      container.appendChild(div);
+    });
+  }
+
+  // ── Results screen ──────────────────────────────────────────────────────────
+  function showResults({ submissions, output, error }) {
+    // Submissions list
+    const list = document.getElementById('submissions-list');
+    list.innerHTML = '';
+    submissions.forEach(({ playerName, code, isAI }, i) => {
+      const color = AVATAR_COLORS[i % AVATAR_COLORS.length];
+      const card = document.createElement('div');
+      card.className = 'submission-card';
+      card.innerHTML = `
+        <div class="submission-header">
+          <div class="player-avatar" style="background:${color}22;color:${color};border:1px solid ${color}44;width:24px;height:24px;border-radius:50%;display:flex;align-items:center;justify-content:center;font-weight:700;font-size:.7rem;flex-shrink:0">${isAI ? '🤖' : playerName.charAt(0).toUpperCase()}</div>
+          <span class="submission-name">${escapeHtml(playerName)}</span>
+          ${isAI ? '<span style="font-size:0.7rem;color:#a78bfa;background:#1e1040;border:1px solid #7c3aed;padding:2px 8px;border-radius:20px;font-weight:700">NPC</span>' : ''}
+        </div>
+        <pre class="submission-code">${escapeHtml(code)}</pre>
+      `;
+      list.appendChild(card);
+    });
+
+    // Output
+    const outputEl = document.getElementById('output-content');
+    if (error) {
+      outputEl.innerHTML = `<div class="output-error">${escapeHtml(error)}</div>`;
+    } else if (output && output.length > 0) {
+      outputEl.innerHTML = `<div class="output-lines">${output.map(l => `<div class="output-line">${escapeHtml(String(l))}</div>`).join('')}</div>`;
+    } else {
+      outputEl.innerHTML = `<div class="output-empty">No output. Did anyone push to <code>log</code>?</div>`;
+    }
+
+    showScreen('results');
+  }
+
+  function handlePlayAgain() {
+    socket.emit('leaveLobby');
+    resetState();
+    socket.emit('createLobby', { username: state.username });
+  }
+
   function handleBackToMenu() {
     socket.emit('leaveLobby');
-    state.selectedMode = null;
-    state.lobbyCode = '';
-    state.isHost = false;
-    document.getElementById('join-code').value = '';
+    resetState();
     showScreen('menu');
   }
 
-  // ── Socket events ─────────────────────────────────────────────────────────
+  function resetState() {
+    clearInterval(state.timerInterval);
+    state.selectedMode = null;
+    state.lobbyCode    = '';
+    state.isHost       = false;
+    state.submitted    = false;
+    document.getElementById('join-code').value = '';
+  }
+
+  // ── Socket events ─────────────────────────────────────────────────────────────
   socket.on('lobbyJoined', renderLobby);
 
   socket.on('joinError', ({ message }) => {
     showError(document.getElementById('join-error'), message);
   });
 
-  socket.on('playerListUpdated', ({ players }) => {
-    updatePlayerList(players);
-  });
+  socket.on('playerListUpdated', ({ players }) => updatePlayerList(players));
 
-  socket.on('playerLeft', ({ name }) => {
-    showToast(`${name} left the lobby`);
-  });
+  socket.on('playerLeft', () => showToast('A player left the lobby'));
 
   socket.on('promotedToHost', () => {
     state.isHost = true;
-    document.getElementById('host-badge').style.display = 'inline-block';
+    document.getElementById('host-badge').style.display   = 'inline-block';
     document.getElementById('host-controls').style.display = 'block';
     document.getElementById('guest-controls').style.display = 'none';
     renderModeGrid();
@@ -622,16 +924,38 @@
   });
 
   socket.on('gameStarted', ({ mode }) => {
-    const found = GAME_MODES.find(m => m.id === mode);
-    document.getElementById('game-mode-pill').textContent = found ? `${found.icon} ${found.name}` : mode;
-    showScreen('game');
+    // Brief transition — writing screen comes from roundStarted
   });
 
-  // ── Helpers ───────────────────────────────────────────────────────────────
+  socket.on('roundStarted', (data) => {
+    buildWaitingPlayerList(state.players);
+    startWritingScreen(data);
+  });
+
+  socket.on('submissionProgress', ({ submitted, total }) => {
+    // If we already submitted, switch to waiting screen
+    if (state.submitted) {
+      showScreen('waiting');
+      updateWaitingScreen({ submitted, total });
+    }
+  });
+
+  socket.on('aiThinking', ({ count }) => {
+    showScreen('waiting');
+    document.getElementById('waiting-count-text').textContent = `🤖 NPC is writing code…`;
+  });
+
+  socket.on('revealResults', showResults);
+
+  // ── Helpers ───────────────────────────────────────────────────────────────────
   function showError(el, msg) { el.textContent = msg; el.classList.add('show'); }
   function hideError(el) { el.classList.remove('show'); }
   function escapeHtml(s) {
-    return s.replace(/&/g,'&amp;').replace(/</g,'&lt;').replace(/>/g,'&gt;').replace(/"/g,'&quot;');
+    return String(s)
+      .replace(/&/g,'&amp;')
+      .replace(/</g,'&lt;')
+      .replace(/>/g,'&gt;')
+      .replace(/"/g,'&quot;');
   }
 </script>
 </body>
