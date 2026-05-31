@@ -831,6 +831,7 @@
 <script src="/socket.io/socket.io.js"></script>
 <script src="/bugBlackjack.js"></script>
 <script>
+  const ROUND_DURATION_SECS = 120;
   // ── Constants ────────────────────────────────────────────────────────────────
   const AVATAR_COLORS = [
     '#c8f135','#60a5fa','#f97316','#ec4899','#34d399',
@@ -840,7 +841,6 @@
   const GAME_MODES = [
     { id: 'skribbl',  name: 'Skribbl',      suit: '✏️', suitColor: '#60a5fa', desc: 'Draw & guess the word',    tag: 'classic'  },
     { id: 'gartic',   name: 'Gartic Phone', suit: '📞', suitColor: '#f97316', desc: 'Telephone, but drawings',  tag: 'chaotic'  },
-    { id: 'codecard', name: 'Code Cards',   suit: '♠',  suitColor: '#c8f135', desc: 'Debug hands, score chips', tag: 'strategy' },
     { id: 'bugjack',  name: 'Bug Blackjack',  suit: '🃏',  suitColor: '#ec4899', desc: "Hit 21 bugs, don't bust" },
   ];
 
@@ -991,7 +991,6 @@
 
   function handleLeave() {
     socket.emit('leaveLobby');
-    resetState();
     resetState();
     showScreen('menu');
   }
@@ -1189,9 +1188,6 @@
   socket.on('aiThinking', ({ count }) => {
     showScreen('waiting');
     document.getElementById('waiting-count-text').textContent = `🤖 NPC is writing code…`;
-    const found = GAME_MODES.find(m => m.id === mode);
-    document.getElementById('game-mode-pill').textContent = found ? `${found.suit} ${found.name}` : mode;
-    showScreen('game');
   });
 
   socket.on('revealResults', showResults);
