@@ -8,130 +8,232 @@
   <link href="https://fonts.googleapis.com/css2?family=JetBrains+Mono:wght@400;700&family=Syne:wght@700;800&display=swap" rel="stylesheet">
   <link rel="stylesheet" href="/bugBlackjack.css" />
   <style>
-    * { box-sizing: border-box; margin: 0; padding: 0; }
+    :root {
+      --lime: #c8f135;
+      --lime-dim: #9ab82a;
+      --black: #080808;
+      --panel: #101010;
+      --border: #222;
+      --muted: #555;
+      --danger: #ff3b3b;
+      --danger-dim: #7f1010;
+      --white: #f0f0e8;
+      --font-display: 'Bebas Neue', sans-serif;
+      --font-mono: 'Space Mono', monospace;
+    }
+
+    *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
 
     body {
-      font-family: 'Segoe UI', system-ui, sans-serif;
-      background: #0f0f1a;
-      color: #e8e8f0;
+      font-family: var(--font-mono);
+      background: var(--black);
+      color: var(--white);
       min-height: 100vh;
       display: flex;
       align-items: center;
       justify-content: center;
+      overflow-x: hidden;
+    }
+
+    /* scanlines overlay */
+    body::before {
+      content: '';
+      pointer-events: none;
+      position: fixed;
+      inset: 0;
+      background: repeating-linear-gradient(
+        0deg,
+        transparent,
+        transparent 2px,
+        rgba(0,0,0,0.18) 2px,
+        rgba(0,0,0,0.18) 4px
+      );
+      z-index: 1000;
     }
 
     .screen {
       display: none;
       width: 100%;
-      max-width: 480px;
+      max-width: 460px;
       padding: 16px;
-      animation: fadeIn 0.2s ease;
     }
-    .screen.active { display: block; }
-    #screen-results { max-width: 720px; }
+    .screen.active {
+      display: block;
+      animation: slideUp 0.18s ease both;
+    }
 
-    @keyframes fadeIn {
-      from { opacity: 0; transform: translateY(8px); }
+    @keyframes slideUp {
+      from { opacity: 0; transform: translateY(12px); }
       to   { opacity: 1; transform: translateY(0); }
     }
 
+    /* ── CARD ── */
     .card {
-      background: #1a1a2e;
-      border: 1px solid #2a2a4a;
-      border-radius: 16px;
-      padding: 36px 32px;
+      background: rgba(16,16,16,0.95);
+      backdrop-filter: blur(12px);
+      -webkit-backdrop-filter: blur(12px);
+      border: 1px solid var(--lime);
+      border-radius: 1px;
+      padding: 32px 28px;
+      position: relative;
     }
 
-    h1 {
-      font-family: 'Syne', sans-serif;
+    /* border pulse SVG */
+    .card .border-pulse {
+      position: absolute;
+      inset: -1px;
+      width: calc(100% + 2px);
+      height: calc(100% + 2px);
+      pointer-events: none;
+      overflow: visible;
+      z-index: 0;
+    }
+    .card .border-pulse rect {
+      fill: none;
+      stroke: #ffffff;
+      stroke-width: 3;
+      stroke-linecap: round;
+      stroke-dasharray: 48 9999;
+      stroke-dashoffset: 0;
+      opacity: 0;
+    }
+    .card .border-pulse rect.pulse-active {
+      animation: borderTravel 2.4s linear forwards;
+    }
+    @keyframes borderTravel {
+      0%   { opacity: 0;   stroke-dashoffset: 0; }
+      5%   { opacity: 1; }
+      90%  { opacity: 0.9; }
+      100% { opacity: 0;   stroke-dashoffset: -2200; }
+    }
+
+    /* ── LOGO ── */
+    .logo {
+      font-family: var(--font-display);
+      font-size: 5.5rem;
+      line-height: 0.85;
+      letter-spacing: 2px;
+      color: var(--lime);
+      margin-bottom: 2px;
+    }
+    .logo-sub {
+      font-size: 0.7rem;
+      color: var(--muted);
+      letter-spacing: 0.25em;
+      text-transform: uppercase;
+      margin-bottom: 36px;
+    }
+
+    /* ── HEADINGS ── */
+    h2 {
+      font-family: var(--font-display);
       font-size: 2.4rem;
-      font-weight: 800;
-      letter-spacing: -1px;
-      background: linear-gradient(135deg, #a78bfa, #60a5fa);
-      -webkit-background-clip: text;
-      -webkit-text-fill-color: transparent;
-      background-clip: text;
-      margin-bottom: 4px;
+      letter-spacing: 1px;
+      color: var(--lime);
+      line-height: 1;
+      margin-bottom: 2px;
+    }
+    .subtitle {
+      font-size: 0.7rem;
+      color: var(--muted);
+      letter-spacing: 0.15em;
+      text-transform: uppercase;
+      margin-bottom: 28px;
     }
 
-    .tagline { color: #6b7280; font-size: 0.9rem; margin-bottom: 32px; }
-
-    h2 { font-size: 1.4rem; font-weight: 700; margin-bottom: 4px; }
-    .subtitle { color: #6b7280; font-size: 0.85rem; margin-bottom: 24px; }
-
+    /* ── LABELS ── */
     label {
       display: block;
-      font-size: 0.8rem;
-      font-weight: 600;
-      color: #9ca3af;
+      font-size: 0.65rem;
+      font-weight: 700;
+      color: var(--lime-dim);
       text-transform: uppercase;
-      letter-spacing: 0.05em;
+      letter-spacing: 0.15em;
       margin-bottom: 6px;
     }
 
+    /* ── INPUTS ── */
     input[type="text"] {
       width: 100%;
-      padding: 12px 14px;
-      background: #0f0f1a;
-      border: 1px solid #2a2a4a;
-      border-radius: 10px;
-      color: #e8e8f0;
-      font-size: 1rem;
+      padding: 11px 14px;
+      background: #000;
+      border: 1px solid var(--border);
+      border-bottom: 2px solid var(--lime);
+      color: var(--white);
+      font-family: var(--font-mono);
+      font-size: 0.95rem;
       outline: none;
+      border-radius: 0;
       transition: border-color 0.15s;
+      caret-color: var(--lime);
     }
-    input[type="text"]:focus { border-color: #7c3aed; }
-    input[type="text"]::placeholder { color: #4b5563; }
+    input[type="text"]:focus { border-color: var(--lime); border-bottom-color: var(--lime); }
+    input[type="text"]::placeholder { color: #333; }
 
+    /* ── BUTTONS ── */
     .btn {
       display: block;
       width: 100%;
-      padding: 13px;
+      padding: 12px;
       border: none;
-      border-radius: 10px;
-      font-size: 1rem;
-      font-weight: 700;
+      font-family: var(--font-display);
+      font-size: 1.35rem;
+      letter-spacing: 2px;
       cursor: pointer;
-      transition: opacity 0.15s, transform 0.1s;
+      transition: transform 0.08s ease-out;
       text-align: center;
+      border-radius: 0;
+      position: relative;
+      overflow: hidden;
     }
     .btn:active { transform: scale(0.98); }
-    .btn:disabled { opacity: 0.4; cursor: not-allowed; transform: none; }
-    .btn-primary  { background: linear-gradient(135deg, #7c3aed, #3b82f6); color: #fff; }
-    .btn-secondary { background: #2a2a4a; color: #e8e8f0; }
-    .btn-danger   { background: #7f1d1d; color: #fca5a5; }
-    .btn-success  { background: linear-gradient(135deg, #059669, #10b981); color: #fff; }
+    .btn:disabled { opacity: 0.3; cursor: not-allowed; transform: none; }
 
-    .field { margin-bottom: 18px; }
+    .btn-primary { background: var(--lime); color: var(--black); }
+    .btn-primary:hover:not(:disabled) { background: #d8ff4a; }
+    .btn-secondary { background: transparent; border: 1px solid var(--border); color: var(--white); }
+    .btn-secondary:hover:not(:disabled) { border-color: var(--white); }
+    .btn-danger { background: transparent; border: 1px solid var(--danger-dim); color: var(--danger); }
+    .btn-danger:hover:not(:disabled) { background: var(--danger-dim); }
+    .btn-success { background: var(--lime); color: var(--black); }
+    .btn-success:hover:not(:disabled) { background: #d8ff4a; }
 
+    /* ── DIVIDER ── */
     .divider {
       display: flex;
       align-items: center;
       gap: 12px;
       margin: 20px 0;
-      color: #374151;
-      font-size: 0.8rem;
+      font-size: 0.65rem;
+      color: var(--muted);
+      letter-spacing: 0.2em;
+      text-transform: uppercase;
     }
     .divider::before, .divider::after {
       content: '';
       flex: 1;
       height: 1px;
-      background: #2a2a4a;
+      background: var(--border);
     }
 
+    /* ── ERROR ── */
     .error-msg {
-      background: #450a0a;
-      border: 1px solid #7f1d1d;
-      color: #fca5a5;
-      padding: 10px 14px;
-      border-radius: 8px;
-      font-size: 0.85rem;
-      margin-bottom: 16px;
+      background: #1a0000;
+      border-left: 3px solid var(--danger);
+      color: var(--danger);
+      padding: 8px 12px;
+      font-size: 0.75rem;
+      margin-bottom: 14px;
       display: none;
+      letter-spacing: 0.05em;
     }
     .error-msg.show { display: block; }
 
-    /* ── Lobby ── */
+    .field { margin-bottom: 18px; }
+    .mt-12 { margin-top: 12px; }
+    .mt-8  { margin-top: 8px; }
+
+    /* ── LOBBY HEADER ── */
     .lobby-header {
       display: flex;
       align-items: flex-start;
@@ -140,379 +242,358 @@
       gap: 12px;
     }
     .lobby-code-box {
-      background: #0f0f1a;
-      border: 1px solid #2a2a4a;
-      border-radius: 10px;
-      padding: 10px 16px;
+      background: #000;
+      border: 1px solid var(--border);
+      border-top: 2px solid var(--lime);
+      padding: 10px 14px;
       text-align: center;
+      cursor: pointer;
     }
-    .lobby-code-label { font-size: 0.7rem; color: #6b7280; text-transform: uppercase; letter-spacing: 0.1em; margin-bottom: 2px; }
-    .lobby-code-value { font-size: 1.6rem; font-weight: 800; letter-spacing: 4px; color: #a78bfa; font-family: monospace; }
-    .copy-hint { font-size: 0.65rem; color: #4b5563; margin-top: 2px; cursor: pointer; }
-    .copy-hint:hover { color: #9ca3af; }
-    .host-badge {
-      background: #fef08a22;
-      border: 1px solid #ca8a04;
-      color: #fde047;
-      font-size: 0.7rem;
-      font-weight: 700;
-      padding: 3px 8px;
-      border-radius: 20px;
-      white-space: nowrap;
-    }
-    .section-label {
-      font-size: 0.75rem;
-      font-weight: 700;
-      color: #6b7280;
+    .lobby-code-label {
+      font-size: 0.6rem;
+      color: var(--muted);
       text-transform: uppercase;
-      letter-spacing: 0.08em;
+      letter-spacing: 0.2em;
+      margin-bottom: 3px;
+    }
+    .lobby-code-value {
+      font-family: var(--font-display);
+      font-size: 2rem;
+      letter-spacing: 5px;
+      color: var(--lime);
+    }
+    .copy-hint { font-size: 0.6rem; color: #333; margin-top: 2px; }
+    .lobby-code-box:hover .copy-hint { color: var(--muted); }
+
+    .host-badge {
+      font-size: 0.6rem;
+      font-weight: 700;
+      color: var(--lime);
+      letter-spacing: 0.15em;
+      text-transform: uppercase;
+      border: 1px solid var(--lime-dim);
+      padding: 3px 8px;
+    }
+
+    /* ── SECTION LABEL ── */
+    .section-label {
+      font-size: 0.6rem;
+      font-weight: 700;
+      color: var(--muted);
+      text-transform: uppercase;
+      letter-spacing: 0.2em;
       margin-bottom: 10px;
     }
+
+    /* ── PLAYER LIST ── */
     .player-list {
       list-style: none;
       display: flex;
       flex-direction: column;
-      gap: 6px;
+      gap: 4px;
       margin-bottom: 24px;
-      max-height: 220px;
+      max-height: 210px;
       overflow-y: auto;
     }
+    .player-list::-webkit-scrollbar { width: 4px; }
+    .player-list::-webkit-scrollbar-track { background: #000; }
+    .player-list::-webkit-scrollbar-thumb { background: var(--border); }
+
     .player-item {
       display: flex;
       align-items: center;
       gap: 10px;
-      background: #0f0f1a;
-      border: 1px solid #2a2a4a;
-      border-radius: 8px;
-      padding: 9px 12px;
-      font-size: 0.9rem;
+      background: #000;
+      border-left: 3px solid transparent;
+      padding: 8px 10px;
+      font-size: 0.82rem;
+      transition: border-color 0.12s;
     }
+    .player-item.is-host { border-left-color: var(--lime); }
+
     .player-avatar {
-      width: 28px;
-      height: 28px;
-      border-radius: 50%;
+      width: 26px;
+      height: 26px;
       display: flex;
       align-items: center;
       justify-content: center;
-      font-weight: 700;
-      font-size: 0.75rem;
+      font-family: var(--font-display);
+      font-size: 1rem;
       flex-shrink: 0;
+      letter-spacing: 0;
     }
     .player-name { flex: 1; }
-    .player-host-tag { font-size: 0.65rem; color: #fde047; font-weight: 600; }
+    .player-host-tag { font-size: 0.6rem; color: var(--lime); letter-spacing: 0.15em; text-transform: uppercase; }
+    .you-tag { color: var(--muted); font-size: 0.7rem; }
 
-    .mode-grid { display: grid; grid-template-columns: 1fr 1fr; gap: 10px; margin-bottom: 20px; }
-    .mode-card {
-      background: #0f0f1a;
-      border: 2px solid #2a2a4a;
-      border-radius: 12px;
-      padding: 16px 12px;
-      cursor: pointer;
-      transition: border-color 0.15s, background 0.15s;
-      text-align: center;
+    /* ── MODE GRID ── */
+    .mode-grid {
+      display: grid;
+      grid-template-columns: 1fr 1fr 1fr;
+      gap: 8px;
+      margin-bottom: 18px;
+      perspective: 800px;
     }
-    .mode-card:hover { border-color: #7c3aed44; background: #1a1a2e; }
-    .mode-card.selected { border-color: #7c3aed; background: #1e1040; }
-    .mode-icon { font-size: 1.8rem; margin-bottom: 6px; }
-    .mode-name { font-size: 0.85rem; font-weight: 700; color: #e8e8f0; }
-    .mode-desc { font-size: 0.7rem; color: #6b7280; margin-top: 3px; }
 
+    .mode-card {
+      background: #091208;
+      border: none;
+      padding: 0;
+      cursor: pointer;
+      text-align: center;
+      position: relative;
+      transition: transform 0.08s ease-out, box-shadow 0.08s ease-out;
+      transform-style: preserve-3d;
+      will-change: transform;
+    }
+    .mode-card.selected .mode-inner { background: #0e2010; }
+    .mode-card.locked { cursor: not-allowed; opacity: 0.35; }
+
+    .mode-card svg.wiggle-border {
+      position: absolute;
+      inset: 0;
+      width: 100%; height: 100%;
+      pointer-events: none;
+    }
+    .mode-card svg.wiggle-border path {
+      fill: none;
+      stroke: var(--border);
+      stroke-width: 1.5;
+      transition: stroke 0.15s;
+    }
+    .mode-card:hover svg.wiggle-border path { stroke: var(--lime-dim); }
+    .mode-card.selected svg.wiggle-border path {
+      stroke: var(--lime);
+      stroke-width: 2;
+      animation: wigglePath 2s ease-in-out infinite alternate;
+    }
+    @keyframes wigglePath {
+      from { d: path("M6,3 Q20,-1 34,3 Q48,7 54,3 Q68,-1 94,3 L94,97 Q80,101 54,97 Q28,93 6,97 Z"); }
+      to   { d: path("M6,3 Q20,7 34,3 Q48,-1 54,3 Q68,7 94,3 L94,97 Q80,93 54,97 Q28,101 6,97 Z"); }
+    }
+
+    .mode-inner {
+      position: relative;
+      padding: 14px 8px 12px;
+      z-index: 1;
+    }
+
+    .mode-suit {
+      font-size: 1.4rem;
+      margin-bottom: 4px;
+      display: block;
+      filter: drop-shadow(0 0 6px currentColor);
+      animation: floatSuit 3s ease-in-out infinite;
+    }
+    @keyframes floatSuit {
+      0%, 100% { transform: translateY(0); }
+      50%       { transform: translateY(-3px); }
+    }
+    .mode-card:nth-child(2) .mode-suit { animation-delay: -1s; }
+    .mode-card:nth-child(3) .mode-suit { animation-delay: -2s; }
+
+    .mode-name {
+      font-family: var(--font-display);
+      font-size: 0.95rem;
+      letter-spacing: 1px;
+      color: var(--white);
+      display: block;
+      line-height: 1.1;
+    }
+    .mode-desc {
+      font-size: 0.58rem;
+      color: var(--muted);
+      margin-top: 4px;
+      letter-spacing: 0.04em;
+      display: block;
+      line-height: 1.4;
+    }
+    .mode-tag {
+      display: inline-block;
+      font-size: 0.55rem;
+      letter-spacing: 0.12em;
+      text-transform: uppercase;
+      margin-top: 6px;
+      padding: 2px 6px;
+      border: 1px solid var(--border);
+      color: var(--muted);
+    }
+    .mode-card.selected .mode-tag { border-color: var(--lime-dim); color: var(--lime); }
+
+    /* ── WAITING ── */
     .waiting-msg {
       text-align: center;
-      color: #6b7280;
-      font-size: 0.9rem;
-      padding: 20px 0;
+      color: var(--muted);
+      font-size: 0.75rem;
+      padding: 18px 0;
+      letter-spacing: 0.08em;
+      text-transform: uppercase;
     }
-    .waiting-msg .spinner {
+    .spinner {
       display: inline-block;
-      width: 18px;
-      height: 18px;
-      border: 2px solid #2a2a4a;
-      border-top-color: #7c3aed;
+      width: 14px; height: 14px;
+      border: 2px solid var(--border);
+      border-top-color: var(--lime);
       border-radius: 50%;
-      animation: spin 0.8s linear infinite;
+      animation: spin 0.7s linear infinite;
       vertical-align: middle;
-      margin-right: 8px;
+      margin-right: 6px;
     }
     @keyframes spin { to { transform: rotate(360deg); } }
 
-    /* ── Writing screen ── */
-    .spec-box {
-      background: #0a0a14;
-      border: 1px solid #2a2a4a;
-      border-radius: 10px;
-      padding: 14px 16px;
-      margin-bottom: 16px;
+    /* ── GAME SCREEN ── */
+    .game-banner { text-align: center; padding: 36px 12px; }
+    .game-banner .big-icon {
+      font-family: var(--font-display);
+      font-size: 7rem;
+      line-height: 1;
+      color: var(--lime);
+      margin-bottom: 8px;
     }
-    .spec-label {
-      font-size: 0.7rem;
-      font-weight: 700;
-      color: #7c3aed;
+    .game-banner h2 { margin-bottom: 6px; }
+    .game-banner p { color: var(--muted); font-size: 0.75rem; letter-spacing: 0.1em; text-transform: uppercase; margin-bottom: 20px; }
+    .mode-pill {
+      display: inline-block;
+      background: var(--lime);
+      color: var(--black);
+      font-family: var(--font-display);
+      font-size: 1.2rem;
+      letter-spacing: 2px;
+      padding: 5px 20px;
+      margin-bottom: 24px;
+    }
+
+    /* ── TICKER ── */
+    .ticker {
+      font-size: 0.6rem;
+      color: #1e1e1e;
+      letter-spacing: 0.2em;
       text-transform: uppercase;
-      letter-spacing: 0.1em;
-      margin-bottom: 6px;
-    }
-    .spec-description {
-      font-size: 0.85rem;
-      color: #9ca3af;
-      margin-bottom: 10px;
-    }
-    .spec-code {
-      font-family: 'JetBrains Mono', monospace;
-      font-size: 0.78rem;
-      color: #a5f3fc;
-      white-space: pre;
-      overflow-x: auto;
-      line-height: 1.6;
-    }
-
-    .code-editor {
-      width: 100%;
-      min-height: 160px;
-      background: #0a0a14;
-      border: 1px solid #2a2a4a;
-      border-radius: 10px;
-      color: #e8e8f0;
-      font-family: 'JetBrains Mono', monospace;
-      font-size: 0.85rem;
-      padding: 14px 16px;
-      outline: none;
-      resize: vertical;
-      line-height: 1.6;
-      transition: border-color 0.15s;
-      margin-bottom: 14px;
-    }
-    .code-editor:focus { border-color: #7c3aed; }
-
-    .timer-bar-wrap {
-      background: #0a0a14;
-      border-radius: 6px;
-      height: 6px;
+      margin-bottom: 24px;
       overflow: hidden;
-      margin-bottom: 14px;
-    }
-    .timer-bar {
-      height: 100%;
-      background: linear-gradient(90deg, #7c3aed, #3b82f6);
-      transition: width 1s linear, background 0.5s;
-      width: 100%;
-    }
-    .timer-bar.urgent { background: linear-gradient(90deg, #ef4444, #f97316); }
-
-    .submit-row {
-      display: flex;
-      align-items: center;
-      gap: 12px;
-    }
-    .timer-text {
-      font-size: 0.85rem;
-      color: #6b7280;
       white-space: nowrap;
     }
-    .timer-text.urgent { color: #ef4444; font-weight: 700; }
 
-    .submitted-badge {
-      display: inline-flex;
-      align-items: center;
-      gap: 6px;
-      background: #052e16;
-      border: 1px solid #15803d;
-      color: #86efac;
-      font-size: 0.85rem;
-      font-weight: 700;
-      padding: 10px 16px;
-      border-radius: 10px;
-      width: 100%;
-      justify-content: center;
-    }
-
-    /* ── Waiting-for-others screen ── */
-    .progress-players {
-      display: flex;
-      flex-direction: column;
-      gap: 8px;
-      margin: 24px 0;
-    }
-    .progress-player {
-      display: flex;
-      align-items: center;
-      gap: 10px;
-      background: #0f0f1a;
-      border: 1px solid #2a2a4a;
-      border-radius: 8px;
-      padding: 10px 14px;
-      font-size: 0.9rem;
-      transition: border-color 0.3s;
-    }
-    .progress-player.done { border-color: #15803d; }
-    .progress-status { font-size: 1rem; margin-left: auto; }
-    .big-spinner {
-      width: 48px;
-      height: 48px;
-      border: 3px solid #2a2a4a;
-      border-top-color: #7c3aed;
-      border-radius: 50%;
-      animation: spin 1s linear infinite;
-      margin: 0 auto 20px;
-    }
-
-    /* ── Results screen ── */
-    .results-header {
-      text-align: center;
-      margin-bottom: 28px;
-    }
-    .results-header .icon { font-size: 3rem; margin-bottom: 8px; }
-
-    .submissions-list { display: flex; flex-direction: column; gap: 12px; margin-bottom: 24px; }
-    .submission-card {
-      background: #0f0f1a;
-      border: 1px solid #2a2a4a;
-      border-radius: 12px;
-      overflow: hidden;
-    }
-    .submission-header {
-      display: flex;
-      align-items: center;
-      gap: 10px;
-      padding: 10px 14px;
-      background: #0a0a14;
-      border-bottom: 1px solid #2a2a4a;
-    }
-    .submission-name { font-size: 0.85rem; font-weight: 700; }
-    .submission-code {
-      font-family: 'JetBrains Mono', monospace;
-      font-size: 0.78rem;
-      color: #c4b5fd;
-      padding: 12px 14px;
-      white-space: pre;
-      overflow-x: auto;
-      line-height: 1.6;
-    }
-
-    .output-box {
-      background: #0a0a14;
-      border: 1px solid #2a2a4a;
-      border-radius: 12px;
-      padding: 16px;
-      margin-bottom: 20px;
-    }
-    .output-label {
-      font-size: 0.75rem;
-      font-weight: 700;
-      color: #6b7280;
-      text-transform: uppercase;
-      letter-spacing: 0.08em;
-      margin-bottom: 10px;
-    }
-    .output-lines { display: flex; flex-direction: column; gap: 4px; }
-    .output-line {
-      font-family: 'JetBrains Mono', monospace;
-      font-size: 0.82rem;
-      color: #86efac;
-      padding: 3px 0;
-      border-bottom: 1px solid #1a1a2e;
-    }
-    .output-error {
-      font-family: 'JetBrains Mono', monospace;
-      font-size: 0.85rem;
-      color: #fca5a5;
-      background: #450a0a;
-      border-radius: 8px;
-      padding: 10px 12px;
-    }
-    .output-empty { font-size: 0.85rem; color: #4b5563; font-style: italic; }
-
-    /* ── Toast ── */
+    /* ── TOAST ── */
     .toast {
       position: fixed;
-      bottom: 24px;
+      bottom: 20px;
       left: 50%;
-      transform: translateX(-50%) translateY(80px);
-      background: #1a1a2e;
-      border: 1px solid #2a2a4a;
-      color: #e8e8f0;
-      padding: 10px 20px;
-      border-radius: 30px;
-      font-size: 0.85rem;
-      font-weight: 600;
-      transition: transform 0.25s ease;
+      transform: translateX(-50%) translateY(60px);
+      background: var(--lime);
+      color: var(--black);
+      font-family: var(--font-display);
+      font-size: 1rem;
+      letter-spacing: 2px;
+      padding: 8px 22px;
+      transition: transform 0.22s ease;
       white-space: nowrap;
-      z-index: 999;
+      z-index: 9999 !important;
     }
     .toast.show { transform: translateX(-50%) translateY(0); }
 
-    .mt-8  { margin-top: 8px; }
-    .mt-12 { margin-top: 12px; }
-    .mt-16 { margin-top: 16px; }
+    /* ── VIDEO BACKGROUND ── */
+    .bg-video-wrap {
+      position: fixed;
+      inset: 0;
+      z-index: 0;
+      overflow: hidden;
+    }
+    .bg-video-wrap video {
+      width: 100%;
+      height: 100%;
+      object-fit: cover;
+      opacity: 0.38;
+      filter: sepia(1) saturate(4) hue-rotate(26deg) brightness(0.5);
+    }
+    .bg-video-wrap::after {
+      content: '';
+      position: absolute;
+      inset: 0;
+      background: radial-gradient(ellipse at center, transparent 30%, rgba(8,8,8,0.82) 100%);
+    }
+    body > *:not(.bg-video-wrap) { position: relative; z-index: 1; }
   </style>
 </head>
 <body>
 
+<div class="bg-video-wrap">
+  <video autoplay muted loop playsinline>
+    <source src="video/bg.mp4" type="video/mp4">
+  </video>
+</div>
+
+<div class="bg-video-wrap">
+  <video autoplay muted loop playsinline>
+    <source src="video/bg.mp4" type="video/mp4">
+  </video>
+</div>
+
 <!-- ═══════════════ LOGIN ═══════════════ -->
 <div id="screen-login" class="screen active">
   <div class="card">
-    <h1>NPC Hacks</h1>
-    <p class="tagline">A social coding chaos game</p>
+    <svg class="border-pulse" xmlns="http://www.w3.org/2000/svg"><rect x="1" y="1" width="calc(100% - 2px)" height="calc(100% - 2px)" rx="0"/></svg>
+    <div class="logo">Algo<br>Games</div>
+    <p class="logo-sub">// draw · guess · win //</p>
+    <div class="ticker">░░ social drawing &amp; guessing ░░ v0.1.0 ░░ insert coin ░░</div>
     <div class="field">
-      <label for="login-username">Your name</label>
-      <input type="text" id="login-username" placeholder="Enter a display name" maxlength="20" autocomplete="off" />
+      <label for="login-username">Player tag</label>
+      <input type="text" id="login-username" placeholder="enter player tag" maxlength="20" autocomplete="off" />
     </div>
     <div id="login-error" class="error-msg"></div>
-    <button class="btn btn-primary" onclick="handleLogin()">Play</button>
+    <button class="btn btn-primary" onclick="handleLogin()">Start</button>
   </div>
 </div>
 
-<!-- ═══════════════ MAIN MENU ═══════════════ -->
+<!-- MENU -->
 <div id="screen-menu" class="screen">
   <div class="card">
-    <h2>Welcome, <span id="menu-username"></span></h2>
-    <p class="subtitle">What would you like to do?</p>
+    <svg class="border-pulse" xmlns="http://www.w3.org/2000/svg"><rect x="1" y="1" width="calc(100% - 2px)" height="calc(100% - 2px)" rx="0"/></svg>
+    <h2>Lobby<br>Select</h2>
+    <p class="subtitle">// <span id="menu-username"></span></p>
     <button class="btn btn-primary" onclick="handleCreate()">Create Lobby</button>
-    <div class="divider">or</div>
+    <div class="divider">or join</div>
     <div class="field">
       <label for="join-code">Lobby code</label>
-      <input type="text" id="join-code" placeholder="ABC123" maxlength="6" autocomplete="off"
+      <input type="text" id="join-code" placeholder="ABC123_" maxlength="6" autocomplete="off"
              oninput="this.value = this.value.toUpperCase()" />
     </div>
     <div id="join-error" class="error-msg"></div>
-    <button class="btn btn-secondary" onclick="handleJoin()">Join Lobby</button>
+    <button class="btn btn-secondary" onclick="handleJoin()">Join</button>
   </div>
 </div>
 
 <!-- ═══════════════ LOBBY ═══════════════ -->
 <div id="screen-lobby" class="screen">
   <div class="card">
+    <svg class="border-pulse" xmlns="http://www.w3.org/2000/svg"><rect x="1" y="1" width="calc(100% - 2px)" height="calc(100% - 2px)" rx="0"/></svg>
     <div class="lobby-header">
       <div>
-        <h2 style="margin-bottom:0">Lobby</h2>
-        <p class="subtitle" style="margin-bottom:0">Waiting for players…</p>
+        <h2>Lobby</h2>
+        <p class="subtitle" id="lobby-status-text">// waiting for players</p>
       </div>
-      <div style="display:flex;flex-direction:column;align-items:flex-end;gap:6px">
-        <div class="lobby-code-box" onclick="copyCode()" title="Click to copy">
+      <div style="display:flex;flex-direction:column;align-items:flex-end;gap:8px">
+        <div class="lobby-code-box" onclick="copyCode()">
           <div class="lobby-code-label">Code</div>
           <div class="lobby-code-value" id="lobby-code-display">------</div>
-          <div class="copy-hint">click to copy</div>
+          <div class="copy-hint">[ click to copy ]</div>
         </div>
-        <span id="host-badge" class="host-badge" style="display:none">You are the host</span>
+        <span id="host-badge" class="host-badge" style="display:none">// host</span>
       </div>
     </div>
-
-    <div class="section-label">Players (<span id="player-count">0</span>/12)</div>
+    <div class="section-label">Players — <span id="player-count">0</span> / 12</div>
     <ul class="player-list" id="player-list"></ul>
-
     <div id="host-controls" style="display:none">
-      <div class="section-label">Game Mode</div>
+      <div class="section-label">Pick mode</div>
       <div class="mode-grid" id="mode-grid"></div>
-      <button class="btn btn-success" id="start-btn" onclick="handleStart()" disabled>Start Game</button>
+      <button class="btn btn-success" id="start-btn" onclick="handleStart()" disabled>Launch Game</button>
     </div>
-
     <div id="guest-controls" style="display:none">
       <div id="guest-mode-display" class="waiting-msg">
-        <span class="spinner"></span> Waiting for the host to pick a game mode…
+        <span class="spinner"></span>host is choosing a mode
       </div>
     </div>
-
-    <button class="btn btn-danger mt-12" onclick="handleLeave()">Leave Lobby</button>
+    <button class="btn btn-danger mt-12" onclick="handleLeave()">Leave</button>
   </div>
 </div>
 
@@ -602,19 +683,16 @@
 <script>
   // ── Constants ────────────────────────────────────────────────────────────────
   const AVATAR_COLORS = [
-    '#7c3aed','#3b82f6','#10b981','#f59e0b','#ef4444',
-    '#ec4899','#06b6d4','#84cc16','#f97316','#8b5cf6'
+    '#c8f135','#60a5fa','#f97316','#ec4899','#34d399',
+    '#facc15','#a78bfa','#fb7185','#38bdf8','#4ade80'
   ];
 
   const GAME_MODES = [
-    { id: 'classic',  name: 'Classic',        icon: '✏️',  desc: 'Draw it, guess it' },
-    { id: 'speed',    name: 'Speed Round',    icon: '⚡',  desc: 'Race the clock' },
-    { id: 'chaos',    name: 'Chaos Mode',     icon: '🌀',  desc: 'Expect the unexpected' },
-    { id: 'team',     name: 'Team Play',      icon: '🤝',  desc: 'Collaborate to win' },
-    { id: 'bugjack',  name: 'Bug Blackjack',  icon: '🃏',  desc: "Hit 21 bugs, don't bust" },
+    { id: 'skribbl',  name: 'Skribbl',      suit: '✏️', suitColor: '#60a5fa', desc: 'Draw & guess the word',    tag: 'classic'  },
+    { id: 'gartic',   name: 'Gartic Phone', suit: '📞', suitColor: '#f97316', desc: 'Telephone, but drawings',  tag: 'chaotic'  },
+    { id: 'codecard', name: 'Code Cards',   suit: '♠',  suitColor: '#c8f135', desc: 'Debug hands, score chips', tag: 'strategy' },
+    { id: 'bugjack',  name: 'Bug Blackjack',  suit: '🃏',  suitColor: '#ec4899', desc: "Hit 21 bugs, don't bust" },
   ];
-
-  const ROUND_DURATION_SECS = 120; // 2 minutes to write code
 
   const socket = io();
   let state = {
@@ -628,25 +706,22 @@
     submitted: false,
   };
 
-  // ── Screens ──────────────────────────────────────────────────────────────────
   function showScreen(id) {
     document.querySelectorAll('.screen').forEach(s => s.classList.remove('active'));
     document.getElementById('screen-' + id).classList.add('active');
   }
 
-  // ── Toast ─────────────────────────────────────────────────────────────────────
   let toastTimer;
   function showToast(msg) {
     const t = document.getElementById('toast');
     t.textContent = msg;
     t.classList.add('show');
     clearTimeout(toastTimer);
-    toastTimer = setTimeout(() => t.classList.remove('show'), 2500);
+    toastTimer = setTimeout(() => t.classList.remove('show'), 2400);
   }
   window.showToast = showToast;
   window.showScreen = showScreen;
 
-  // ── Login ─────────────────────────────────────────────────────────────────────
   document.getElementById('login-username').addEventListener('keydown', e => {
     if (e.key === 'Enter') handleLogin();
   });
@@ -654,14 +729,13 @@
   function handleLogin() {
     const name = document.getElementById('login-username').value.trim();
     const err  = document.getElementById('login-error');
-    if (!name) { showError(err, 'Please enter a display name.'); return; }
+    if (!name) { showError(err, '⚠ enter a display name'); return; }
     hideError(err);
     state.username = name;
     document.getElementById('menu-username').textContent = name;
     showScreen('menu');
   }
 
-  // ── Menu ──────────────────────────────────────────────────────────────────────
   document.getElementById('join-code').addEventListener('keydown', e => {
     if (e.key === 'Enter') handleJoin();
   });
@@ -671,15 +745,14 @@
   function handleJoin() {
     const code = document.getElementById('join-code').value.trim().toUpperCase();
     const err  = document.getElementById('join-error');
-    if (code.length < 4) { showError(err, 'Enter a valid lobby code.'); return; }
+    if (code.length < 4) { showError(err, '⚠ enter a valid lobby code'); return; }
     hideError(err);
     socket.emit('joinLobby', { username: state.username, code });
   }
 
-  // ── Lobby ─────────────────────────────────────────────────────────────────────
   function renderLobby({ code, players, isHost, gameMode }) {
-    state.isHost       = isHost;
-    state.lobbyCode    = code;
+    state.isHost = isHost;
+    state.lobbyCode = code;
     state.selectedMode = gameMode;
     state.players      = players;
 
@@ -687,12 +760,10 @@
     document.getElementById('host-badge').style.display   = isHost ? 'inline-block' : 'none';
     document.getElementById('host-controls').style.display = isHost ? 'block' : 'none';
     document.getElementById('guest-controls').style.display = isHost ? 'none' : 'block';
-
     if (isHost) renderModeGrid();
     updatePlayerList(players);
     updateStartButton();
     if (gameMode && !isHost) applyModeToGuest(gameMode);
-
     showScreen('lobby');
   }
 
@@ -704,13 +775,13 @@
     players.forEach((p, i) => {
       const color   = AVATAR_COLORS[i % AVATAR_COLORS.length];
       const initial = p.name.charAt(0).toUpperCase();
-      const isYou   = p.name === state.username;
+      const isYou = p.name === state.username;
       const li = document.createElement('li');
-      li.className = 'player-item';
+      li.className = 'player-item' + (i === 0 ? ' is-host' : '');
       li.innerHTML = `
-        <div class="player-avatar" style="background:${color}22;color:${color};border:1px solid ${color}44">${initial}</div>
-        <span class="player-name">${escapeHtml(p.name)}${isYou ? ' <span style="color:#6b7280;font-size:0.75rem">(you)</span>' : ''}</span>
-        ${i === 0 ? '<span class="player-host-tag">HOST</span>' : ''}
+        <div class="player-avatar" style="color:${color}">${initial}</div>
+        <span class="player-name">${escapeHtml(p.name)}${isYou ? ' <span class="you-tag">[you]</span>' : ''}</span>
+        ${i === 0 ? '<span class="player-host-tag">host</span>' : ''}
       `;
       list.appendChild(li);
     });
@@ -722,7 +793,17 @@
     GAME_MODES.forEach(mode => {
       const div = document.createElement('div');
       div.className = 'mode-card' + (state.selectedMode === mode.id ? ' selected' : '');
-      div.innerHTML = `<div class="mode-icon">${mode.icon}</div><div class="mode-name">${mode.name}</div><div class="mode-desc">${mode.desc}</div>`;
+      div.innerHTML = `
+        <svg class="wiggle-border" viewBox="0 0 100 100" preserveAspectRatio="none" xmlns="http://www.w3.org/2000/svg">
+          <path d="M6,3 Q20,-1 34,3 Q48,7 54,3 Q68,-1 94,3 L94,97 Q80,101 54,97 Q28,93 6,97 Z"/>
+        </svg>
+        <div class="mode-inner">
+          <span class="mode-suit" style="color:${mode.suitColor}">${mode.suit}</span>
+          <span class="mode-name">${mode.name}</span>
+          <span class="mode-desc">${mode.desc}</span>
+          <span class="mode-tag">${mode.tag}</span>
+        </div>
+      `;
       div.addEventListener('click', () => selectMode(mode.id));
       grid.appendChild(div);
     });
@@ -744,7 +825,7 @@
     const mode = GAME_MODES.find(m => m.id === modeId);
     const el = document.getElementById('guest-mode-display');
     if (mode) {
-      el.innerHTML = `<span style="font-size:1.5rem">${mode.icon}</span><br><strong style="color:#e8e8f0">${mode.name}</strong><br><span style="font-size:0.8rem">${mode.desc}</span><br><br>Waiting for host to start…`;
+      el.innerHTML = `<div style="font-size:1.8rem;margin-bottom:8px;color:${mode.suitColor}">${mode.suit}</div><div style="font-family:var(--font-display);font-size:1.4rem;letter-spacing:2px;color:var(--lime)">${mode.name}</div><div style="font-size:0.65rem;color:var(--muted);letter-spacing:0.1em;text-transform:uppercase;margin-top:4px">${mode.desc}</div><div style="margin-top:12px;font-size:0.65rem;letter-spacing:0.15em;text-transform:uppercase">waiting for host to start</div>`;
     }
     state.selectedMode = modeId;
   }
@@ -760,6 +841,7 @@
 
   function handleLeave() {
     socket.emit('leaveLobby');
+    resetState();
     resetState();
     showScreen('menu');
   }
@@ -906,17 +988,10 @@
     document.getElementById('join-code').value = '';
   }
 
-  // ── Socket events ─────────────────────────────────────────────────────────────
   socket.on('lobbyJoined', renderLobby);
-
-  socket.on('joinError', ({ message }) => {
-    showError(document.getElementById('join-error'), message);
-  });
-
+  socket.on('joinError', ({ message }) => showError(document.getElementById('join-error'), '⚠ ' + message));
   socket.on('playerListUpdated', ({ players }) => updatePlayerList(players));
-
-  socket.on('playerLeft', () => showToast('A player left the lobby'));
-
+  socket.on('playerLeft', ({ name }) => showToast(name + ' left'));
   socket.on('promotedToHost', () => {
     state.isHost = true;
     document.getElementById('host-badge').style.display   = 'inline-block';
@@ -924,15 +999,13 @@
     document.getElementById('guest-controls').style.display = 'none';
     renderModeGrid();
     updateStartButton();
-    showToast('You are now the host!');
+    showToast('You are now the host');
   });
-
   socket.on('gameModeSelected', ({ mode }) => {
     state.selectedMode = mode;
     if (!state.isHost) applyModeToGuest(mode);
     else { renderModeGrid(); updateStartButton(); }
   });
-
   socket.on('gameStarted', ({ mode }) => {
     if (mode === 'bugjack') {
       BugBlackjack.start();
@@ -966,11 +1039,13 @@
   socket.on('aiThinking', ({ count }) => {
     showScreen('waiting');
     document.getElementById('waiting-count-text').textContent = `🤖 NPC is writing code…`;
+    const found = GAME_MODES.find(m => m.id === mode);
+    document.getElementById('game-mode-pill').textContent = found ? `${found.suit} ${found.name}` : mode;
+    showScreen('game');
   });
 
   socket.on('revealResults', showResults);
 
-  // ── Helpers ───────────────────────────────────────────────────────────────────
   function showError(el, msg) { el.textContent = msg; el.classList.add('show'); }
   function hideError(el) { el.classList.remove('show'); }
   function escapeHtml(s) {
@@ -980,6 +1055,103 @@
       .replace(/>/g,'&gt;')
       .replace(/"/g,'&quot;');
   }
+
+  // ── Border pulse ─────────────────────────────────────────────────────────
+  function initPulse(card) {
+    const svg  = card.querySelector('.border-pulse');
+    const rect = card.querySelector('.border-pulse rect');
+    if (!svg || !rect) return;
+
+    function sizeRect() {
+      const w = card.offsetWidth;
+      const h = card.offsetHeight;
+      rect.setAttribute('width',  w - 2);
+      rect.setAttribute('height', h - 2);
+      // blob is ~14% of perimeter so it reads clearly over the full lime border
+      const perim = 2 * (w + h);
+      rect.setAttribute('stroke-dasharray', `${Math.round(perim * 0.14)} ${perim + 200}`);
+    }
+
+    sizeRect();
+    new ResizeObserver(sizeRect).observe(card);
+
+    const delay = 3000 + Math.random() * 4000;
+    function firePulse() {
+      rect.classList.remove('pulse-active');
+      void rect.offsetWidth;
+      rect.classList.add('pulse-active');
+      rect.addEventListener('animationend', () => {
+        rect.classList.remove('pulse-active');
+        setTimeout(firePulse, 5000 + Math.random() * 4000);
+      }, { once: true });
+    }
+    setTimeout(firePulse, delay);
+  }
+
+  document.querySelectorAll('.card').forEach(initPulse);
+
+  // ── Tilt (cards + buttons) ───────────────────────────────────────────────
+  function bindTilt(el, { tiltMax = 18, scaleHover = 1.06, shineColor = 'rgba(200,241,53,0.22)', perspective = 500 } = {}) {
+    if (el._tiltBound) return;
+    el._tiltBound = true;
+    el.style.position = el.style.position || 'relative';
+    el.style.overflow = 'hidden';
+
+    const shine = document.createElement('div');
+    shine.style.cssText = `
+      position:absolute;inset:0;pointer-events:none;z-index:2;
+      background:radial-gradient(circle at 50% 50%,${shineColor} 0%,transparent 65%);
+      opacity:0;transition:opacity 0.12s;
+    `;
+    el.appendChild(shine);
+
+    el.addEventListener('mouseenter', () => {
+      if (el.disabled) return;
+      shine.style.opacity = '1';
+    });
+
+    el.addEventListener('mousemove', (e) => {
+      if (el.disabled) return;
+      const r  = el.getBoundingClientRect();
+      const dx = (e.clientX - (r.left + r.width  / 2)) / (r.width  / 2);
+      const dy = (e.clientY - (r.top  + r.height / 2)) / (r.height / 2);
+      const rotX = -dy * tiltMax;
+      const rotY =  dx * tiltMax;
+      const scale = el.classList.contains('selected') ? scaleHover + 0.02 : scaleHover;
+      el.style.transform = `perspective(${perspective}px) rotateX(${rotX}deg) rotateY(${rotY}deg) scale(${scale})`;
+      el.style.zIndex = '10';
+      const px = ((e.clientX - r.left) / r.width  * 100).toFixed(1);
+      const py = ((e.clientY - r.top)  / r.height * 100).toFixed(1);
+      shine.style.background = `radial-gradient(circle at ${px}% ${py}%,${shineColor} 0%,transparent 65%)`;
+    });
+
+    el.addEventListener('mouseleave', () => {
+      shine.style.opacity = '0';
+      const base = el.classList.contains('selected') ? 1.02 : 1;
+      el.style.zIndex = '';
+      el.style.transition = 'transform 0.38s cubic-bezier(0.34,1.56,0.64,1)';
+      el.style.transform = `perspective(${perspective}px) rotateX(0deg) rotateY(0deg) scale(${base})`;
+      setTimeout(() => { el.style.transition = 'transform 0.08s ease-out'; }, 390);
+    });
+  }
+
+  function bindAllTilts() {
+    document.querySelectorAll('.mode-card').forEach(c =>
+      bindTilt(c, { tiltMax: 18, scaleHover: 1.08 })
+    );
+    document.querySelectorAll('.btn').forEach(b =>
+      bindTilt(b, { tiltMax: 5, scaleHover: 1.02, perspective: 600 })
+    );
+  }
+
+  const _origRenderModeGrid = renderModeGrid;
+  renderModeGrid = function() {
+    _origRenderModeGrid();
+    bindAllTilts();
+  };
+
+  document.querySelector('.bg-video-wrap video').playbackRate = 0.35;
+  bindAllTilts();
 
   // ── Bug Blackjack wiring ────────────────────────────────────────────────────
   BugBlackjack.init({

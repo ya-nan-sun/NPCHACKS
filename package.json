@@ -6,8 +6,27 @@
     "start": "node server.js"
   },
   "dependencies": {
+<<<<<<< Updated upstream
     "dotenv": "^17.4.2",
     "express": "^4.18.2",
     "socket.io": "^4.7.2"
   }
+=======
+    "express": "^4.22.2",
+    "socket.io": "^4.8.3"
+  },
+  "description": "",
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/ya-nan-sun/NPCHACKS.git"
+  },
+  "keywords": [],
+  "author": "",
+  "license": "ISC",
+  "type": "commonjs",
+  "bugs": {
+    "url": "https://github.com/ya-nan-sun/NPCHACKS/issues"
+  },
+  "homepage": "https://github.com/ya-nan-sun/NPCHACKS#readme"
+>>>>>>> Stashed changes
 }
