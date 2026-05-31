@@ -938,6 +938,15 @@
       BugBlackjack.start();
       return;
     }
+    if (mode === 'classic') {
+      const params = new URLSearchParams({
+        username: state.username,
+        code: state.lobbyCode,
+        host: state.isHost ? '1' : '0',
+      });
+      window.location.href = `/classic?${params}`;
+      return;
+    }
     // Brief transition — writing screen comes from roundStarted
   });
 

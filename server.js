@@ -11,6 +11,7 @@ require('dotenv').config();
  */
 
 const { registerBugBlackjack, cleanupBugBlackjack } = require('./bugBlackjack');
+const { register: registerClassic, startClassicGame, cleanupGame: cleanupClassicGame, isTransitioning: classicIsTransitioning } = require('./modes/defaultgartic/gameHandler');
 
 const express    = require('express');
 const http       = require('http');
@@ -22,6 +23,7 @@ const server = http.createServer(app);
 const io     = new Server(server);
 
 app.use(express.static(path.join(__dirname, 'public')));
+app.use('/classic', express.static(path.join(__dirname, 'modes/defaultgartic/public')));
 
 /**
  * Shared lobby store — passed to every game mode handler.
@@ -43,9 +45,8 @@ function generateCode() {
 }
 
 // ── Register game mode handlers ───────────────────────────────────────────────
-// Each team adds their handler here when ready.
 require('./modes/exquisite-corpse/gameHandler').register(io, lobbies);
-// require('./modes/classic/gameHandler').register(io, lobbies);
+registerClassic(io, lobbies);
 // require('./modes/speed-round/gameHandler').register(io, lobbies);
 // require('./modes/chaos/gameHandler').register(io, lobbies);
 
@@ -128,6 +129,7 @@ io.on('connection', (socket) => {
     const { lobbyCode } = socket.data;
     const lobby = lobbies[lobbyCode];
     if (!lobby || lobby.host !== socket.id || !lobby.gameMode) return;
+    if (lobby.gameMode === 'classic') startClassicGame(lobbyCode, lobby);
     io.to(lobbyCode).emit('gameStarted', { mode: lobby.gameMode });
   });
 
@@ -146,6 +148,9 @@ io.on('connection', (socket) => {
 function handleLeave(socket) {
   const { lobbyCode, username } = socket.data;
   if (!lobbyCode || !lobbies[lobbyCode]) return;
+  // Players navigating to /classic temporarily disconnect — skip lobby teardown
+  if (classicIsTransitioning(lobbyCode)) return;
+  cleanupClassicGame(lobbyCode, socket.id);
 
   const lobby = lobbies[lobbyCode];
   lobby.players = lobby.players.filter(p => p.id !== socket.id);

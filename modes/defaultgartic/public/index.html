@@ -20,7 +20,7 @@
     .screen { display: none; }
     .screen.active { display: flex; }
 
-    #screen-login, #screen-menu, #screen-lobby, #screen-gameover {
+    #screen-loading, #screen-gameover {
       min-height: 100vh;
       align-items: center;
       justify-content: center;
@@ -381,74 +381,15 @@
 </head>
 <body>
 
-<!-- ── LOGIN ── -->
-<div id="screen-login" class="screen active">
-  <div class="card">
+<!-- ── LOADING ── -->
+<div id="screen-loading" class="screen active">
+  <div class="card" style="text-align:center">
     <h1>LeetCode Skribbl</h1>
-    <p class="tagline">Code it. Watch it. Guess it.</p>
-    <div class="field">
-      <label for="login-username">Your name</label>
-      <input type="text" id="login-username" placeholder="Enter a display name" maxlength="20" autocomplete="off" />
+    <p class="tagline" id="loading-msg">Joining game…</p>
+    <div style="margin-top:16px">
+      <div style="display:inline-block;width:24px;height:24px;border:2px solid #2a2a4a;border-top-color:#7c3aed;border-radius:50%;animation:spin .8s linear infinite"></div>
     </div>
-    <div id="login-error" class="error-msg"></div>
-    <button class="btn btn-primary" onclick="handleLogin()">Play</button>
-  </div>
-</div>
-
-<!-- ── MENU ── -->
-<div id="screen-menu" class="screen">
-  <div class="card">
-    <h2>Welcome, <span id="menu-username"></span></h2>
-    <p class="subtitle">Create a lobby or join a friend's.</p>
-    <button class="btn btn-primary" onclick="handleCreate()">Create Lobby</button>
-    <div class="divider">or</div>
-    <div class="field">
-      <label for="join-code">Lobby code</label>
-      <input type="text" id="join-code" placeholder="ABC123" maxlength="6" autocomplete="off"
-             oninput="this.value=this.value.toUpperCase()" />
-    </div>
-    <div id="join-error" class="error-msg"></div>
-    <button class="btn btn-secondary" onclick="handleJoin()">Join Lobby</button>
-  </div>
-</div>
-
-<!-- ── LOBBY ── -->
-<div id="screen-lobby" class="screen">
-  <div class="card">
-    <div class="lobby-header">
-      <div>
-        <h2 style="margin-bottom:0">Lobby</h2>
-        <p class="subtitle" style="margin-bottom:0">Waiting for players…</p>
-      </div>
-      <div style="display:flex;flex-direction:column;align-items:flex-end;gap:6px">
-        <div class="lobby-code-box" onclick="copyCode()">
-          <div class="lobby-code-label">Code</div>
-          <div class="lobby-code-value" id="lobby-code-display">------</div>
-          <div class="copy-hint">click to copy</div>
-        </div>
-        <span id="host-badge" class="host-badge" style="display:none">You are the host</span>
-      </div>
-    </div>
-
-    <div class="section-label">Players (<span id="player-count">0</span>/8)</div>
-    <ul class="player-list" id="player-list"></ul>
-
-    <div id="start-error" class="error-msg"></div>
-
-    <div id="host-start" style="display:none">
-      <p style="font-size:.8rem;color:#6b7280;margin-bottom:10px">
-        Each player takes a turn as the <strong style="color:#a78bfa">Coder</strong>.
-        Everyone else guesses the LeetCode problem from the code.
-      </p>
-      <button class="btn btn-success" id="start-btn" onclick="handleStart()">Start Game</button>
-    </div>
-    <div id="guest-wait" style="display:none">
-      <div style="text-align:center;color:#6b7280;font-size:.88rem;padding:12px 0">
-        Waiting for host to start the game…
-      </div>
-    </div>
-
-    <button class="btn btn-danger mt-10" onclick="handleLeave()">Leave</button>
+    <div id="loading-error" class="error-msg mt-16"></div>
   </div>
 </div>
 
@@ -642,84 +583,21 @@ function initEditor(readOnly) {
   }
 }
 
-// ── Login ──────────────────────────────────────────────────────────────────
+// ── Auto-rejoin from root lobby URL params ─────────────────────────────────
 
-document.getElementById('login-username').addEventListener('keydown', e => {
-  if (e.key === 'Enter') handleLogin();
-});
-
-function handleLogin() {
-  const name = document.getElementById('login-username').value.trim();
-  const err = document.getElementById('login-error');
-  if (!name) { showErr(err, 'Enter a display name.'); return; }
-  hideErr(err);
-  state.username = name;
-  document.getElementById('menu-username').textContent = name;
-  showScreen('menu');
-}
-
-// ── Menu ───────────────────────────────────────────────────────────────────
-
-document.getElementById('join-code').addEventListener('keydown', e => {
-  if (e.key === 'Enter') handleJoin();
-});
-
-function handleCreate() { socket.emit('createLobby', { username: state.username }); }
-
-function handleJoin() {
-  const code = document.getElementById('join-code').value.trim().toUpperCase();
-  const err = document.getElementById('join-error');
-  if (code.length < 4) { showErr(err, 'Enter a valid lobby code.'); return; }
-  hideErr(err);
-  socket.emit('joinLobby', { username: state.username, code });
-}
-
-// ── Lobby ──────────────────────────────────────────────────────────────────
-
-function renderLobby({ code, players, isHost }) {
-  state.isHost = isHost;
+(function autoRejoin() {
+  const params = new URLSearchParams(location.search);
+  const username = params.get('username');
+  const code = params.get('code');
+  if (!username || !code) {
+    showErr(document.getElementById('loading-error'), 'Missing game parameters. Please return to the lobby.');
+    return;
+  }
+  state.username = username;
   state.lobbyCode = code;
-  document.getElementById('lobby-code-display').textContent = code;
-  document.getElementById('host-badge').style.display = isHost ? 'inline-block' : 'none';
-  document.getElementById('host-start').style.display = isHost ? 'block' : 'none';
-  document.getElementById('guest-wait').style.display = isHost ? 'none' : 'block';
-  updatePlayerList(players);
-  showScreen('lobby');
-}
-
-function updatePlayerList(players) {
-  const list = document.getElementById('player-list');
-  list.innerHTML = '';
-  document.getElementById('player-count').textContent = players.length;
-  players.forEach((p, i) => {
-    const color = AVATAR_COLORS[i % AVATAR_COLORS.length];
-    const li = document.createElement('li');
-    li.className = 'player-item';
-    li.innerHTML = `
-      <div class="player-avatar" style="background:${color}22;color:${color};border:1px solid ${color}44">
-        ${escHtml(p.name.charAt(0).toUpperCase())}
-      </div>
-      <span style="flex:1">${escHtml(p.name)}${p.name === state.username ? ' <span style="color:#6b7280;font-size:.75rem">(you)</span>' : ''}</span>
-      ${i === 0 ? '<span class="player-host-tag">HOST</span>' : ''}
-    `;
-    list.appendChild(li);
-  });
-}
-
-function copyCode() {
-  navigator.clipboard.writeText(state.lobbyCode).then(() => showToast('Code copied!'));
-}
-
-function handleStart() {
-  hideErr(document.getElementById('start-error'));
-  socket.emit('startGame');
-}
-
-function handleLeave() {
-  socket.emit('leaveLobby');
-  resetState();
-  showScreen('menu');
-}
+  document.getElementById('loading-msg').textContent = `Joining as ${username}…`;
+  socket.emit('classicRejoin', { code, username });
+})();
 
 // ── Game: round start ──────────────────────────────────────────────────────
 
@@ -914,8 +792,8 @@ function showGameOver({ finalScores }) {
 }
 
 function backToMenu() {
-  resetState();
-  showScreen('menu');
+  socket.emit('leaveLobby');
+  window.location.href = '/';
 }
 
 // ── Helpers ────────────────────────────────────────────────────────────────
@@ -925,7 +803,6 @@ function resetState() {
   state.lobbyCode = '';
   state.isCoder = false;
   state.hasGuessedCorrectly = false;
-  document.getElementById('join-code').value = '';
 }
 
 function showErr(el, msg) { el.textContent = msg; el.classList.add('show'); }
@@ -936,23 +813,17 @@ function escHtml(s) {
 
 // ── Socket events ──────────────────────────────────────────────────────────
 
-socket.on('lobbyJoined', renderLobby);
-
-socket.on('joinError', ({ message }) => showErr(document.getElementById('join-error'), message));
-
-socket.on('startError', ({ message }) => showErr(document.getElementById('start-error'), message));
-
-socket.on('playerListUpdated', ({ players }) => {
-  updatePlayerList(players);
+socket.on('classicRejoined', ({ isHost }) => {
+  state.isHost = isHost;
+  document.getElementById('loading-msg').textContent = 'Waiting for all players…';
 });
 
-socket.on('playerLeft', ({ name }) => showToast(`${name} left`));
+socket.on('classicRejoinError', ({ message }) => {
+  showErr(document.getElementById('loading-error'), message);
+});
 
 socket.on('promotedToHost', () => {
   state.isHost = true;
-  document.getElementById('host-badge').style.display = 'inline-block';
-  document.getElementById('host-start').style.display = 'block';
-  document.getElementById('guest-wait').style.display = 'none';
   showToast('You are now the host!');
 });
 
@@ -1000,8 +871,7 @@ socket.on('gameOver', showGameOver);
 
 socket.on('gameAborted', ({ message }) => {
   showToast(message);
-  resetState();
-  showScreen('menu');
+  setTimeout(() => { window.location.href = '/'; }, 2000);
 });
 </script>
 </body>
