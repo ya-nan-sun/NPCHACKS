@@ -6,6 +6,7 @@
   <title>NPC Hacks</title>
   <link rel="preconnect" href="https://fonts.googleapis.com">
   <link href="https://fonts.googleapis.com/css2?family=JetBrains+Mono:wght@400;700&family=Syne:wght@700;800&display=swap" rel="stylesheet">
+  <link rel="stylesheet" href="/bugBlackjack.css" />
   <style>
     * { box-sizing: border-box; margin: 0; padding: 0; }
 
@@ -515,6 +516,11 @@
   </div>
 </div>
 
+<!-- BUG BLACKJACK -->
+<div id="screen-bugjack" class="screen">
+  <div id="bb-root"></div>
+</div>
+
 <!-- ═══════════════ WRITING ═══════════════ -->
 <div id="screen-writing" class="screen">
   <div class="card">
@@ -592,6 +598,7 @@
 <div class="toast" id="toast"></div>
 
 <script src="/socket.io/socket.io.js"></script>
+<script src="/bugBlackjack.js"></script>
 <script>
   // ── Constants ────────────────────────────────────────────────────────────────
   const AVATAR_COLORS = [
@@ -600,10 +607,11 @@
   ];
 
   const GAME_MODES = [
-    { id: 'classic',  name: 'Classic',      icon: '✏️',  desc: 'Draw it, guess it' },
-    { id: 'speed',    name: 'Speed Round',  icon: '⚡',  desc: 'Race the clock' },
-    { id: 'chaos',    name: 'Chaos Mode',   icon: '🌀',  desc: 'Expect the unexpected' },
-    { id: 'team',     name: 'Team Play',    icon: '🤝',  desc: 'Collaborate to win' },
+    { id: 'classic',  name: 'Classic',        icon: '✏️',  desc: 'Draw it, guess it' },
+    { id: 'speed',    name: 'Speed Round',    icon: '⚡',  desc: 'Race the clock' },
+    { id: 'chaos',    name: 'Chaos Mode',     icon: '🌀',  desc: 'Expect the unexpected' },
+    { id: 'team',     name: 'Team Play',      icon: '🤝',  desc: 'Collaborate to win' },
+    { id: 'bugjack',  name: 'Bug Blackjack',  icon: '🃏',  desc: "Hit 21 bugs, don't bust" },
   ];
 
   const ROUND_DURATION_SECS = 120; // 2 minutes to write code
@@ -635,6 +643,8 @@
     clearTimeout(toastTimer);
     toastTimer = setTimeout(() => t.classList.remove('show'), 2500);
   }
+  window.showToast = showToast;
+  window.showScreen = showScreen;
 
   // ── Login ─────────────────────────────────────────────────────────────────────
   document.getElementById('login-username').addEventListener('keydown', e => {
@@ -924,6 +934,10 @@
   });
 
   socket.on('gameStarted', ({ mode }) => {
+    if (mode === 'bugjack') {
+      BugBlackjack.start();
+      return;
+    }
     // Brief transition — writing screen comes from roundStarted
   });
 
@@ -957,6 +971,20 @@
       .replace(/>/g,'&gt;')
       .replace(/"/g,'&quot;');
   }
+
+  // ── Bug Blackjack wiring ────────────────────────────────────────────────────
+  BugBlackjack.init({
+    socket,
+    showScreen,
+    onExit: () => {
+      socket.emit('leaveLobby');
+      state.selectedMode = null;
+      state.lobbyCode = '';
+      state.isHost = false;
+      document.getElementById('join-code').value = '';
+      showScreen('menu');
+    },
+  });
 </script>
 </body>
 </html>

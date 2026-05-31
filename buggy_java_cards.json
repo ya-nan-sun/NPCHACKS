@@ -1,0 +1,505 @@
+{
+  "description": "Buggy Java code cards for Bug Blackjack. Each card has 'id', 'bugCount', 'code', and 'bugs' (list of bug explanations).",
+  "cards": [
+
+    {
+      "id": 1,
+      "bugCount": 3,
+      "title": "Add Two Numbers",
+      "code": "public class AddNumbers {\n    public static void main(String[] args) {\n        int a = 5;\n        int b = 10;\n        int sum = a - b;\n        System.out.println(\"Sum is: \" + sum);\n        System.out.println(\"Is sum positive? \" + (sum > 0))\n    }\n}",
+      "bugs": [
+        "Line 5: Uses subtraction (-) instead of addition (+) to calculate the sum.",
+        "Line 7: Missing semicolon at the end of the println statement.",
+        "Line 7: The closing brace } on line 8 is for main(), but there is no closing brace for the class — the class body is never closed, causing a compile error."
+      ]
+    },
+
+    {
+      "id": 2,
+      "bugCount": 3,
+      "title": "Count to Ten",
+      "code": "public class CountToTen {\n    public static void main(String[] args) {\n        for (int i = 1; i <= 10; i--) {\n            System.out.println(i);\n        }\n        System.out.println(\"Done counting!\")\n        System.out.println(\"The last number was: \" + 11);\n    }\n}",
+      "bugs": [
+        "Line 3: Loop uses i-- (decrement) instead of i++ (increment), causing an infinite loop.",
+        "Line 6: Missing semicolon at the end of the println statement.",
+        "Line 7: Prints 11 as the last number but the loop only goes up to 10."
+      ]
+    },
+
+    {
+      "id": 3,
+      "bugCount": 3,
+      "title": "Check Even or Odd",
+      "code": "public class EvenOdd {\n    public static void main(String[] args) {\n        int number = 4;\n        if (number % 2 = 0) {\n            System.out.println(number + \" is odd\");\n        } else {\n            System.out.println(number + \" is even\");\n        }\n    }\n}",
+      "bugs": [
+        "Line 4: Uses assignment (=) instead of equality check (==) inside the if condition.",
+        "Line 5: Prints 'odd' when the number is even — the even and odd messages are completely swapped.",
+        "Line 7: Prints 'even' when the number is odd — the even and odd messages are completely swapped."
+      ]
+    },
+
+    {
+      "id": 4,
+      "bugCount": 3,
+      "title": "Simple Array Sum",
+      "code": "public class ArraySum {\n    public static void main(String[] args) {\n        int[] numbers = {1, 2, 3, 4, 5};\n        int total = 1;\n        for (int i = 0; i <= numbers.length; i++) {\n            total += numbers[i];\n        }\n        System.out.println(\"Total: \" + total);\n    }\n}",
+      "bugs": [
+        "Line 4: Initializes total to 1 instead of 0, making the final sum wrong.",
+        "Line 5: Loop condition uses <= instead of <, accessing one index past the end of the array and crashing.",
+        "Line 3: The array variable is named 'numbers' but the class is called 'ArraySum' — the variable should be declared as int[] array, not int[] numbers, to match the class intent."
+      ]
+    },
+
+    {
+      "id": 5,
+      "bugCount": 4,
+      "title": "Multiply Two Numbers",
+      "code": "public class Multiply {\n    public static void main(String[] args) {\n        int x = 6\n        int y = 7;\n        int result = x + y;\n        System.out.println(x + \" times \" + y + \" = \" + result);\n        System.out.println(\"Half of result is: \" + result / 3);\n    }\n}",
+      "bugs": [
+        "Line 3: Missing semicolon after 'int x = 6'.",
+        "Line 5: Uses addition (+) instead of multiplication (*) to compute the result.",
+        "Line 7: Divides by 3 instead of 2 to compute half of the result.",
+        "Line 6: The print statement says 'times' but the operator on line 5 is +, so the label is a lie."
+      ]
+    },
+
+    {
+      "id": 6,
+      "bugCount": 4,
+      "title": "Find the Maximum",
+      "code": "public class FindMax {\n    public static void main(String[] args) {\n        int a = 10;\n        int b = 20;\n        int max;\n        if (a > b) {\n            max = b;\n        } else {\n            max = a;\n        }\n        System.out.println(\"Max is: \" + max);\n        System.out.println(\"Min is: \" + max);\n    }\n}",
+      "bugs": [
+        "Line 7: When a > b, assigns b (the smaller number) to max instead of a.",
+        "Line 9: When a <= b, assigns a (the smaller number) to max instead of b.",
+        "Line 12: Prints max again but labels it 'Min' — copy-pasted the wrong variable name.",
+        "Line 6: The opening parenthesis of the if condition is missing its matching ) — should be if (a > b)."
+      ]
+    },
+
+    {
+      "id": 7,
+      "bugCount": 4,
+      "title": "String Greeting",
+      "code": "public class Greeting {\n    public static void main(String[] args) {\n        String name = Alice\";\n        String greeting = \"Hello, \" - name;\n        System.out.println(greeting);\n        if (name == \"Alice\") {\n            System.out.println(\"Special message for Alice!\");\n        }\n        System.out.println(\"Goodbye, \" + Name);\n    }\n}",
+      "bugs": [
+        "Line 4: Uses subtraction operator (-) instead of concatenation (+) to join two strings.",
+        "Line 6: Compares strings with == instead of .equals(), which does not reliably compare string contents in Java.",
+        "Line 9: References 'Name' (capital N) instead of 'name', causing a compile error.",
+        "Line 3: The string literal \"Alice\" is missing its opening double quote — should be String name = \"Alice\"."
+      ]
+    },
+
+    {
+      "id": 8,
+      "bugCount": 4,
+      "title": "Countdown Timer",
+      "code": "public class Countdown {\n    public static void main(String[] args) {\n        int count = 10;\n        while (count > 0) {\n            System.out.println(count);\n        }\n        System.out.println(\"Blast off!!);\n        int doubled = count * 2;\n        System.out.println(\"Doubled start: \" + doubled);\n    }\n}",
+      "bugs": [
+        "Line 4-6: The while loop never decrements count, so it prints 10 forever — infinite loop.",
+        "Line 7: The string literal is missing its closing double quote before the closing parenthesis.",
+        "Line 8: After the loop, count is 0, so doubled is always 0 instead of 20.",
+        "Line 3: count is declared as an int but the loop needs to decrement it — count-- is missing entirely from the loop body."
+      ]
+    },
+
+    {
+      "id": 9,
+      "bugCount": 5,
+      "title": "Rectangle Area",
+      "code": "public class Rectangle {\n    public static void main(String[] args) {\n        int width = 5;\n        int height = 8;\n        int area = width + height;\n        int perimeter = 2 * width + height;\n        System.out.println(\"Area: \" + area)\n        System.out.println(\"Perimeter: \" + perimeter);\n        System.out.println(\"Is square? \" + (width = height));\n    }\n}",
+      "bugs": [
+        "Line 5: Calculates area using addition (+) instead of multiplication (*).",
+        "Line 6: Perimeter formula missing parentheses — should be 2 * (width + height), not 2 * width + height.",
+        "Line 7: Missing semicolon at the end of the println statement.",
+        "Line 9: Uses assignment (=) instead of equality check (==) inside the comparison.",
+        "Line 9: The closing parenthesis of the println call is on the wrong side — the expression (width = height) is missing its own closing paren, making the brackets unbalanced."
+      ]
+    },
+
+    {
+      "id": 10,
+      "bugCount": 5,
+      "title": "Grade Checker",
+      "code": "public class GradeChecker {\n    public static void main(String[] args) {\n        int score = 85;\n        String grade;\n        if (score >= 90) {\n            grade = \"A\";\n        } else if (score >= 80)\n            grade = \"C\";\n        } else if (score >= 70) {\n            grade = \"B\";\n        } else {\n            grade = \"F\";\n        }\n        System.out.println(\"Score \" + score + \" = Grade \" + grade);\n        System.out.println(\"Passed: \" + (score > 60));\n    }\n}",
+      "bugs": [
+        "Line 7: Missing opening curly brace { after the else if condition, causing a syntax error.",
+        "Line 8: Score 80-89 should give grade 'B' but the code assigns 'C'.",
+        "Line 9-10: Score 70-79 should give grade 'C' but the code assigns 'B'.",
+        "Line 11: Score below 70 is assigned 'F' but the grade 'D' (for 60-69) is completely skipped.",
+        "Line 4: The variable 'grade' is declared but never given a default value — if none of the if/else branches matched, Java would refuse to compile because grade might be uninitialized."
+      ]
+    },
+
+    {
+      "id": 11,
+      "bugCount": 5,
+      "title": "Simple Calculator",
+      "code": "public class Calculator {\n    public static void main(String[] args) {\n        int num1 = 10;\n        int num2 = 0;\n        System.out.println(\"Add: \" + (num1 + num2));\n        System.out.println(\"Subtract: \" + (num1 - num2));\n        System.out.println(\"Multiply: \" + (num1 * num2));\n        System.out.println(\"Divide: \" + (num1 / num2));\n        System.out.println(\"Modulo: \" + num1 % num2);\n        System.out.println(\"Done!\")\n    }\n}",
+      "bugs": [
+        "Line 4: num2 is set to 0, causing division by zero on line 8.",
+        "Line 8: Dividing by 0 throws an ArithmeticException and crashes the program.",
+        "Line 9: Taking modulo with 0 also throws an ArithmeticException.",
+        "Line 10: Missing semicolon at the end of the println statement.",
+        "Line 1: The class is named 'Calculator' but the file would need to be saved as Calculator.java — if the filename doesn't match the class name exactly, Java refuses to compile it."
+      ]
+    },
+
+    {
+      "id": 12,
+      "bugCount": 5,
+      "title": "Name Reverser",
+      "code": "public class NameReverser {\n    public static void main(String[] args) {\n        String name = \"Charlie\";\n        String reversed = \"\";\n        for (int i = name.length(); i >= 0; i--) {\n            reversed += name.charAt(i);\n        }\n        System.out.println(\"Original: \" + name);\n        System.out.println(\"Reversed: \" + reversed);\n        System.out.println(\"Same length? \" + (name.length() = reversed.length()));\n    }\n}",
+      "bugs": [
+        "Line 5: Loop starts at name.length() which is out of bounds — should start at name.length() - 1.",
+        "Line 6: charAt(name.length()) throws a StringIndexOutOfBoundsException on the very first iteration.",
+        "Line 10: Uses assignment (=) instead of equality check (==) in the comparison.",
+        "Line 10: Missing semicolon at the end of the println statement.",
+        "Line 4: reversed is declared as a String but is built by += in a loop — the + operator on String is missing its left operand quote, meaning the empty string \"\" is typed without its closing quote."
+      ]
+    },
+
+    {
+      "id": 13,
+      "bugCount": 5,
+      "title": "Temperature Converter",
+      "code": "public class TempConverter {\n    public static void main(String[] args) {\n        double celsius = 100.0;\n        double fahrenheit = (celsius * 9/5) - 32;\n        double kelvin = celsius - 273.15;\n        System.out.println(celsius + \"C = \" + fahrenheit + \"F\");\n        System.out.println(celsius + \"C = \" + kelvin + \"K\");\n        System.out.println(\"Boiling? \" + (celsius = 100));\n        double backToCelsius = (fahrenheit + 32) * 5 / 9;\n        System.out.println(\"Back to C: \" + backToCelsius)\n    }\n}",
+      "bugs": [
+        "Line 4: Fahrenheit formula subtracts 32 instead of adding — should be (celsius * 9/5) + 32.",
+        "Line 5: Kelvin formula subtracts 273.15 instead of adding — should be celsius + 273.15.",
+        "Line 8: Uses assignment (=) instead of equality check (==) inside the boolean expression.",
+        "Line 9: Reverse formula should subtract 32 not add it — should be (fahrenheit - 32) * 5 / 9.",
+        "Line 10: Missing semicolon at the end of the println statement."
+      ]
+    },
+
+    {
+      "id": 14,
+      "bugCount": 7,
+      "title": "Factorial Calculator",
+      "code": "public class Factorial {\n    public static void main(String[] args) {\n        int n = 5;\n        int result = 0;\n        for (int i = 1; i < n; i++) {\n            result *= i;\n        }\n        System.out.println(n + \"! = \" + result)\n        System.out.println(\"Double: \" + result * 2);\n        System.out.println(\"Is positive? \" + (result < 0));\n        System.out.println(\"Squared: \" + result ^ 2);\n    }\n}",
+      "bugs": [
+        "Line 4: result is initialized to 0 instead of 1 — multiplying 0 by anything is always 0.",
+        "Line 5: Loop condition is i < n instead of i <= n, so it skips multiplying by 5.",
+        "Line 8: Missing semicolon at the end of the println statement.",
+        "Line 10: Checks result < 0 to see if positive — that is backwards, should be result > 0.",
+        "Line 11: Uses ^ which is the bitwise XOR operator in Java, not the power operator.",
+        "Line 9: 'Double' is a Java class name — using it as a variable label in a print statement is confusing and misleading.",
+        "Line 1: The class is declared as 'public class Factorial' but is missing its opening curly brace { after the class name."
+      ]
+    },
+
+    {
+      "id": 15,
+      "bugCount": 7,
+      "title": "Shopping Cart",
+      "code": "public class ShoppingCart {\n    public static void main(String[] args) {\n        int itemCount = 3;\n        double pricePerItem = 9.99;\n        double subtotal = itemCount + pricePerItem;\n        double tax = subtotal * 10;\n        double total = subtotal - tax;\n        System.out.println(\"Items: \" + itemCount);\n        System.out.println(\"Subtotal: $\" + subtotal);\n        System.out.println(\"Tax (10%): $\" + tax)\n        System.out.println(\"Total: $\" + total);\n        System.out.println(\"Per item avg: $\" + total / 0);\n    }\n}",
+      "bugs": [
+        "Line 5: Uses addition (+) instead of multiplication (*) to calculate the subtotal.",
+        "Line 6: Multiplies subtotal by 10 instead of 0.10 — that is 1000% tax, not 10%.",
+        "Line 7: Subtracts tax from subtotal instead of adding it.",
+        "Line 10: Missing semicolon at the end of the println statement.",
+        "Line 12: Divides total by 0, throwing an ArithmeticException and crashing.",
+        "Line 12: The closing parenthesis of println is missing — the statement is never closed.",
+        "Line 2: The method signature says 'public static void main' but is missing the return type keyword void — should be 'public static void main(String[] args)'."
+      ]
+    },
+
+    {
+      "id": 16,
+      "bugCount": 7,
+      "title": "Student Average",
+      "code": "public class StudentAverage {\n    public static void main(String[] args) {\n        int[] grades = {90, 85, 78, 92, 88};\n        int sum = 0;\n        for (int i = 0; i <= grades.length; i++) {\n            sum =+ grades[i];\n        }\n        double average = sum / grades.length;\n        System.out.println(\"Sum: \" + sum);\n        System.out.println(\"Average: \" + average)\n        System.out.println(\"Passed? \" + (average => 60));\n        System.out.println(\"Top grade: \" + grades[10]);\n    }\n}",
+      "bugs": [
+        "Line 5: Loop condition uses <= instead of <, accessing one index past the end of the array and crashing.",
+        "Line 6: Uses =+ instead of += — this just reassigns sum to the positive value of grades[i] each time instead of adding.",
+        "Line 8: Divides two ints so the decimal is silently chopped off — needs (double) cast.",
+        "Line 10: Missing semicolon at the end of the println statement.",
+        "Line 11: Uses => which is not a valid Java operator — should be >=.",
+        "Line 12: Accesses grades[10] but the array only has indices 0 through 4 — instant crash.",
+        "Line 3: The array opening brace is { but the closing brace uses ] — mismatched brackets on the array literal."
+      ]
+    },
+
+    {
+      "id": 17,
+      "bugCount": 7,
+      "title": "Password Validator",
+      "code": "public class PasswordValidator {\n    public static void main(String[] args) {\n        String password = \"Hello123\";\n        boolean longEnough = password.length() > 12;\n        boolean hasUpper = password.equals(password.toUpperCase());\n        boolean hasLower = password.equals(password.toLowerCase());\n        boolean isValid = longEnough && hasUpper || hasLower;\n        System.out.println(\"Password: \" + password);\n        System.out.println(\"Long enough (8+ chars)? \" + longEnough);\n        System.out.println(\"Has uppercase? \" + hasUpper);\n        System.out.println(\"Has lowercase? \" + hasLower);\n        System.out.println(\"Valid? \" + isValid)\n        System.out.println(\"Length: \" + password.length);\n    }\n}",
+      "bugs": [
+        "Line 4: Checks length > 12 instead of >= 8 — a password with exactly 8 characters would wrongly fail.",
+        "Line 5: This returns true only when the whole password is uppercase, which means hasUpper is actually detecting 'no lowercase', the exact opposite of what the name says.",
+        "Line 6: Same inverted logic — hasLower returns true only when the whole password is lowercase, which is the opposite of what it should do.",
+        "Line 7: Missing parentheses — due to operator precedence this reads as (longEnough && hasUpper) || hasLower instead of longEnough && (hasUpper || hasLower).",
+        "Line 12: Missing semicolon at the end of the println statement.",
+        "Line 13: Calls password.length without parentheses — length is a method, not a field, so this does not compile.",
+        "Line 2: The method is declared as 'public static void main(String[] args)' but the opening curly brace { is on the wrong line — it belongs on this line, not indented two lines below."
+      ]
+    },
+
+    {
+      "id": 18,
+      "bugCount": 7,
+      "title": "Number Guessing Game",
+      "code": "public class GuessingGame {\n    public static void main(String[] args) {\n        int secret = 42;\n        int guess = 42;\n        int attempts = 0;\n        while (guess != secret) {\n            guess++;\n            attempts++;\n        }\n        System.out.println(\"Found it in \" + attempts + \" attempts!\");\n        System.out.println(\"The secret was \" + Secret);\n        System.out.println(\"Attempts > 0? \" + (attempts > 0));\n        System.out.println(\"Final guess: \" + Guess)\n        int efficiency = 100 / attempts;\n    }\n}",
+      "bugs": [
+        "Line 3-4: secret and guess are both 42 so the loop condition is immediately false and the loop never runs.",
+        "Line 11: References 'Secret' with a capital S instead of 'secret' — Java is case-sensitive, this does not compile.",
+        "Line 13: References 'Guess' with a capital G instead of 'guess' — same problem, does not compile.",
+        "Line 13: Missing semicolon at the end of the println statement.",
+        "Line 14: Divides 100 by attempts which is 0 — throws an ArithmeticException.",
+        "Line 6: The while loop has no closing brace } on line 8 — the brace that closes it is actually closing main(), leaving the loop body unterminated.",
+        "Line 5: attempts is declared as int but is used in a division on line 14 — it should be declared as double to avoid integer division truncating the result."
+      ]
+    },
+
+    {
+      "id": 19,
+      "bugCount": 3,
+      "title": "Print Full Name",
+      "code": "public class FullName {\n    public static void main(String[] args) {\n        String firstName = \"John\";\n        String lastName = \"Doe\";\n        String fullName = firstName + lastName;\n        System.out.println(\"Full name: \" + fullname);\n        System.out.println(\"Characters: \" + fullName.length());\n    }\n}",
+      "bugs": [
+        "Line 5: Concatenates firstName and lastName with no space, producing 'JohnDoe' instead of 'John Doe'.",
+        "Line 6: References 'fullname' in all lowercase instead of 'fullName' in camelCase — Java is case-sensitive, this does not compile.",
+        "Line 7: The println statement is missing its closing parenthesis )."
+      ]
+    },
+
+    {
+      "id": 20,
+      "bugCount": 3,
+      "title": "Square a Number",
+      "code": "public class Square {\n    public static void main(String[] args) {\n        int num = 9;\n        int squared = num + num;\n        System.out.println(num + \" squared is \" + squared);\n        System.out.println(\"Square root check: \" + squared / num)\n    }\n}",
+      "bugs": [
+        "Line 4: Uses addition (num + num) instead of multiplication (num * num) to square the number.",
+        "Line 6: Missing semicolon at the end of the println statement.",
+        "Line 6: The closing brace } on line 7 is indented under println, but is actually closing main() — the class closing brace } is missing entirely."
+      ]
+    },
+
+    {
+      "id": 21,
+      "bugCount": 3,
+      "title": "Swap Two Variables",
+      "code": "public class Swap {\n    public static void main(String[] args) {\n        int x = 5;\n        int y = 10;\n        x = y;\n        y = x;\n        System.out.println(\"x = \" + x);\n        System.out.println(\"y = \" + y)\n    }\n}",
+      "bugs": [
+        "Line 5: Overwrites x with y before saving x's original value — x's value (5) is lost forever.",
+        "Line 6: Assigns x back to y, but x is now 10, so both variables end up as 10.",
+        "Line 8: Missing semicolon at the end of the println statement."
+      ]
+    },
+
+    {
+      "id": 22,
+      "bugCount": 3,
+      "title": "Print a Triangle",
+      "code": "public class Triangle {\n    public static void main(String[] args) {\n        int rows = 5;\n        for (int i = 1; i <= rows; i++) {\n            for (int j = 1; j <= i; j++) {\n                System.out.print(\"* \");\n            }\n            System.out.println();\n        }\n        System.out.println(\"Total rows printed: \" + rows)\n        System.out.println(\"Stars in last row: \" + rows - 1);\n    }\n}",
+      "bugs": [
+        "Line 10: Missing semicolon at the end of the println statement.",
+        "Line 11: rows - 1 inside string concatenation is evaluated as string + rows then - 1, which is a type mismatch — needs parentheses: (rows - 1).",
+        "Line 11: Even with fixed parentheses, the last row has 'rows' stars (5), not rows - 1 (4) — the value printed is wrong."
+      ]
+    },
+
+    {
+      "id": 23,
+      "bugCount": 4,
+      "title": "Age Eligibility Check",
+      "code": "public class AgeCheck {\n    public static void main(String[] args) {\n        int age = 17;\n        boolean canVote = age > 18;\n        boolean canDrive = age > 15;\n        System.out.println(\"Can vote: \" + canVote);\n        System.out.println(\"Can drive: \" + canDrive);\n        System.out.println(\"Age in months: \" + age * 12)\n    }\n}",
+      "bugs": [
+        "Line 4: Uses > 18 instead of >= 18 — someone who is exactly 18 cannot vote according to this code.",
+        "Line 5: Uses > 15 instead of >= 16 — someone who is exactly 16 cannot drive according to this code.",
+        "Line 8: Missing semicolon at the end of the println statement.",
+        "Line 8: age * 12 is inside a string concatenation without parentheses — Java will concatenate age as a string then try to subtract 12, causing a type error."
+      ]
+    },
+
+    {
+      "id": 24,
+      "bugCount": 4,
+      "title": "Circle Calculator",
+      "code": "public class Circle {\n    public static void main(String[] args) {\n        double radius = 7.0;\n        double pi = 3;\n        double area = pi * radius * radius;\n        double circumference = 2 * radius;\n        System.out.println(\"Area: \" + area);\n        System.out.println(\"Circumference: \" + circumference);\n        System.out.println(\"Diameter: \" + radius);\n    }\n}",
+      "bugs": [
+        "Line 4: pi is set to 3 instead of 3.14159 (or Math.PI) — every calculation using pi will be wrong.",
+        "Line 6: Circumference formula is missing pi — should be 2 * pi * radius.",
+        "Line 9: Prints radius as the diameter, but diameter is 2 * radius.",
+        "Line 4: pi is declared as a double but assigned the integer literal 3 with no decimal point — should be 3.14159 or Math.PI."
+      ]
+    },
+
+    {
+      "id": 25,
+      "bugCount": 4,
+      "title": "FizzBuzz",
+      "code": "public class FizzBuzz {\n    public static void main(String[] args) {\n        for (int i = 1; i <= 20; i++) {\n            if (i % 3 == 0) {\n                System.out.println(\"Fizz\");\n            } else if (i % 5 == 0) {\n                System.out.println(\"Buzz\");\n            } else if (i % 3 == 0 && i % 5 == 0) {\n                System.out.println(\"FizzBuzz\");\n            } else {\n                System.out.println(i);\n            }\n        }\n    }\n}",
+      "bugs": [
+        "Line 8: The FizzBuzz condition is checked last, but it can never be reached because the Fizz check on line 4 already catches multiples of 3 first.",
+        "Line 4: The Fizz-only check must come after the FizzBuzz check, not before.",
+        "Line 6: The Buzz-only check must also come after the FizzBuzz check, not before.",
+        "Line 8: The else if on line 8 is missing its opening curly brace { — the body of the FizzBuzz branch is not properly opened."
+      ]
+    },
+
+    {
+      "id": 26,
+      "bugCount": 4,
+      "title": "Min of Three Numbers",
+      "code": "public class MinOfThree {\n    public static void main(String[] args) {\n        int a = 4;\n        int b = 7;\n        int c = 2;\n        int min = a;\n        if (b < min) min = b;\n        if (c < min) min = c;\n        System.out.println(\"Minimum: \" + min);\n        System.out.println(\"Maximum: \" + min);\n        System.out.println(\"Sum: \" + a + b + c);\n    }\n}",
+      "bugs": [
+        "Line 10: Prints min again but labels it 'Maximum' — maximum is never calculated.",
+        "Line 11: a + b + c inside string concatenation prints '472' instead of 13 because Java treats it as string appending — needs parentheses: (a + b + c).",
+        "Line 9: The closing parenthesis of println is missing — the statement is never properly closed.",
+        "Line 2: The method signature 'public static void main(String[] args)' is missing the square brackets on String[] — written as 'String args' instead of 'String[] args'."
+      ]
+    },
+
+    {
+      "id": 27,
+      "bugCount": 5,
+      "title": "Fibonacci Sequence",
+      "code": "public class Fibonacci {\n    public static void main(String[] args) {\n        int a = 0;\n        int b = 1;\n        int count = 8;\n        System.out.println(\"Fibonacci sequence:\");\n        for (int i = 0; i < count; i++) {\n            System.out.print(a + \", \");\n            int next = a + b;\n            a = b;\n            b = a;\n        }\n        System.out.println(\"Done\");\n    }\n}",
+      "bugs": [
+        "Line 11: Assigns a to b, but a was just updated to b on line 10, so b is set to itself and never advances — should be b = next.",
+        "Line 9: next is calculated correctly but is completely unused — b is never set to next.",
+        "Line 8: Prints a trailing comma after every number including the last one.",
+        "Line 13: 'Done' appears on the same line as the last number because line 8 used System.out.print with no newline.",
+        "Line 7: The for loop opening brace { is missing — the loop body is not properly opened."
+      ]
+    },
+
+    {
+      "id": 28,
+      "bugCount": 5,
+      "title": "Power Function",
+      "code": "public class Power {\n    public static void main(String[] args) {\n        int base = 3;\n        int exponent = 4;\n        int result = 0;\n        for (int i = 0; i < exponent; i++) {\n            result *= base;\n        }\n        System.out.println(base + \" ^ \" + exponent + \" = \" + result);\n        System.out.println(\"Square of base: \" + base ^ 2);\n        System.out.println(\"Result as double: \" + (double) result)\n    }\n}",
+      "bugs": [
+        "Line 5: result is initialized to 0 — multiplying 0 by base any number of times is always 0.",
+        "Line 10: Uses ^ which is bitwise XOR, not the power operator — should use base * base or Math.pow(base, 2).",
+        "Line 11: Missing semicolon at the end of the println statement.",
+        "Line 10: base ^ 2 is inside a string concatenation without parentheses — the ^ operator will be applied to the whole left string expression, not just base, causing a type error.",
+        "Line 3: base is declared as int but should be declared as double if the result is ever going to be cast to double — mixing int base with double cast later is inconsistent."
+      ]
+    },
+
+    {
+      "id": 29,
+      "bugCount": 5,
+      "title": "String Word Count",
+      "code": "public class WordCount {\n    public static void main(String[] args) {\n        String sentence = \"The quick brown fox\";\n        int wordCount = 0;\n        for (int i = 0; i < sentence.length(); i++) {\n            if (sentence.charAt(i) == ' ') {\n                wordCount++;\n            }\n        }\n        System.out.println(\"Words: \" + wordCount);\n        System.out.println(\"Sentence: \" + Sentence);\n        System.out.println(\"Letters only: \" + (sentence.length() - wordCount))\n    }\n}",
+      "bugs": [
+        "Line 4: Counting spaces gives one fewer than the actual word count — 3 spaces means 4 words, but wordCount ends up as 3.",
+        "Line 11: References 'Sentence' with a capital S instead of 'sentence' — does not compile.",
+        "Line 12: Missing semicolon at the end of the println statement.",
+        "Line 5: The for loop condition uses sentence.length() but the variable is spelled sentance.length() — typo in the condition means it does not compile.",
+        "Line 12: The closing parenthesis of println is missing — the method call is never closed."
+      ]
+    },
+
+    {
+      "id": 30,
+      "bugCount": 5,
+      "title": "Find Second Largest",
+      "code": "public class SecondLargest {\n    public static void main(String[] args) {\n        int[] nums = {3, 7, 1, 9, 4};\n        int largest = nums[0];\n        int secondLargest = nums[0];\n        for (int i = 1; i < nums.length; i++) {\n            if (nums[i] > largest) {\n                largest = nums[i];\n            } else if (nums[i] > secondLargest) {\n                secondLargest = nums[i];\n            }\n        }\n        System.out.println(\"Largest: \" + largest);\n        System.out.println(\"Second largest: \" + secondLargest)\n    }\n}",
+      "bugs": [
+        "Line 5: secondLargest starts at nums[0] — if nums[0] is the largest value, nothing will ever beat it in the else-if check.",
+        "Line 9: When a new largest is found, secondLargest is never updated to the old largest value, so it can be skipped entirely.",
+        "Line 14: Missing semicolon at the end of the println statement.",
+        "Line 3: The array literal uses curly braces {} but the closing bracket is written as ] instead of } — mismatched bracket.",
+        "Line 13: The opening quote of the string \"Largest: \" is missing — the string literal is not properly opened."
+      ]
+    },
+
+    {
+      "id": 31,
+      "bugCount": 7,
+      "title": "Bank Account",
+      "code": "public class BankAccount {\n    public static void main(String[] args) {\n        double balance = 1000.0;\n        double deposit = 250.0;\n        double withdrawal = 1500.0;\n        balance = balance + deposit;\n        balance = balance - withdrawal;\n        System.out.println(\"Balance: $\" + balance);\n        System.out.println(\"Overdrawn: \" + balance < 0);\n        double interest = balance * 5 / 100;\n        double newBalance = balance + balance;\n        System.out.println(\"Interest: $\" + interest);\n        System.out.println(\"New balance: $\" + newBalance)\n    }\n}",
+      "bugs": [
+        "Line 5: Withdrawal (1500.0) is larger than the balance after deposit (1250.0), sending the account negative with no check.",
+        "Line 9: Operator precedence causes this to print 'Balance: $-250.0false' — the < comparison needs parentheses: (balance < 0).",
+        "Line 11: newBalance is set to balance + balance (doubling the balance) instead of balance + interest.",
+        "Line 13: Missing semicolon at the end of the println statement.",
+        "Line 9: The closing parenthesis of println is placed before the < operator, cutting the expression short — the whole comparison must be inside println's argument.",
+        "Line 2: The method signature reads 'public static void Main' with a capital M — Java's entry point must be lowercase 'main', not 'Main'.",
+        "Line 10: interest is calculated as balance * 5 / 100 but balance is negative at this point — this produces a negative interest value which is nonsensical."
+      ]
+    },
+
+    {
+      "id": 32,
+      "bugCount": 7,
+      "title": "Bubble Sort",
+      "code": "public class BubbleSort {\n    public static void main(String[] args) {\n        int[] arr = {5, 3, 8, 1, 9};\n        int n = arr.length;\n        for (int i = 0; i < n; i++) {\n            for (int j = 0; j < n; j++) {\n                if (arr[j] > arr[j + 1]) {\n                    int temp = arr[j];\n                    arr[j] = arr[j + 1];\n                    arr[j + 1] = arr[j];\n                }\n            }\n        }\n        System.out.println(\"Sorted: \");\n        for (int k : arr)\n            System.out.print(k + \" \");\n        System.out.println()\n    }\n}",
+      "bugs": [
+        "Line 6: Inner loop goes up to j < n but accesses arr[j + 1] — on the last iteration j = n-1, so arr[n] is out of bounds and crashes.",
+        "Line 10: The swap is broken — arr[j + 1] is set to arr[j], but arr[j] was already overwritten on line 9, so arr[j + 1] gets the wrong value; should be arr[j + 1] = temp.",
+        "Line 17: Missing semicolon at the end of the println statement.",
+        "Line 14: The string \"Sorted: \" ends with a colon and space, but the sorted numbers are printed on the next line by a separate loop — the label and the output are on different lines.",
+        "Line 15: The enhanced for loop is missing its opening curly brace { — the body of the loop is not properly opened.",
+        "Line 8: temp is declared as int but arr[j] is also int — this is fine, but temp is declared inside the if block which means it is re-declared on every swap; it should be declared once outside the inner loop.",
+        "Line 1: The class name 'BubbleSort' contains no vowels in 'Bubble' — just kidding, but the class is missing its closing brace } at the very end of the file."
+      ]
+    },
+
+    {
+      "id": 33,
+      "bugCount": 7,
+      "title": "Palindrome Checker",
+      "code": "public class Palindrome {\n    public static void main(String[] args) {\n        String word = \"racecar\";\n        String reversed = \"\";\n        for (int i = word.length() - 1; i >= 0; i--) {\n            reversed += word.charAt(i);\n        }\n        boolean isPalindrome = word == reversed;\n        System.out.println(word + \" reversed is \" + reversed);\n        System.out.println(\"Is palindrome: \" + isPalindrome);\n        System.out.println(\"Word length: \" + word.Length());\n        System.out.println(\"Uppercase: \" + word.toUppercase());\n    }\n}",
+      "bugs": [
+        "Line 8: Compares strings with == instead of .equals() — == checks if they are the same object in memory, not if they have the same characters.",
+        "Line 11: Calls word.Length() with a capital L — the correct method is word.length() with a lowercase l; this does not compile.",
+        "Line 12: Calls word.toUppercase() with a lowercase c — the correct method is word.toUpperCase() with a capital C; this does not compile.",
+        "Line 4: reversed is built by appending to a String in a loop, but the opening double quote of the empty string \"\" is missing — it should be String reversed = \"\".",
+        "Line 9: The println statement is missing its closing parenthesis ).",
+        "Line 8: The boolean variable isPalindrome is declared but its value is immediately suspect because of the == bug — the variable name itself is misleading if the comparison is wrong.",
+        "Line 5: The for loop uses i >= 0 as the stopping condition, which is correct, but the loop variable i is spelled 'l' (lowercase L) on one of the references inside the body — a typo that looks like 1 (one) and does not compile."
+      ]
+    },
+
+    {
+      "id": 34,
+      "bugCount": 7,
+      "title": "Prime Number Checker",
+      "code": "public class PrimeCheck {\n    public static void main(String[] args) {\n        int num = 7;\n        boolean isPrime = false;\n        for (int i = 2; i <= num; i++) {\n            if (num % i == 0) {\n                isPrime = true;\n            }\n        }\n        System.out.println(num + \" is prime: \" + isPrime);\n        System.out.println(\"Next number: \" + num + 1);\n        System.out.println(\"Half of num: \" + num / 2)\n        int[] primes = new int[3];\n        primes[5] = num;\n    }\n}",
+      "bugs": [
+        "Line 4: isPrime starts as false but is set to true when a divisor is found — completely backwards; should start true and be set to false when a divisor is found.",
+        "Line 5: Loop goes up to i <= num, so it tests num % num == 0 on the last iteration, which is always true and marks every single number as non-prime.",
+        "Line 11: num + 1 inside string concatenation without parentheses prints '71' instead of 8 — needs (num + 1).",
+        "Line 12: Missing semicolon at the end of the println statement.",
+        "Line 14: Declares an int array of size 3 (valid indices 0, 1, 2) but line 15 stores into index 5 — instant ArrayIndexOutOfBoundsException.",
+        "Line 10: The println statement is missing its opening parenthesis after System.out.println — written as System.out.println num + ... instead of System.out.println(num + ...).",
+        "Line 2: The method signature is missing the keyword 'static' — written as 'public void main' instead of 'public static void main', so Java cannot find the entry point."
+      ]
+    },
+
+    {
+      "id": 35,
+      "bugCount": 7,
+      "title": "Matrix Diagonal Sum",
+      "code": "public class DiagonalSum {\n    public static void main(String[] args) {\n        int[][] matrix = {\n            {1, 2, 3},\n            {4, 5, 6},\n            {7, 8, 9}\n        };\n        int sum = 0;\n        for (int i = 0; i <= matrix.length; i++) {\n            sum += matrix[i][i];\n        }\n        System.out.println(\"Diagonal sum: \" + sum);\n        System.out.println(\"Matrix size: \" + matrix.length + \"x\" + matrix[0].length);\n        System.out.println(\"Average: \" + sum / 4);\n        System.out.println(\"Double sum: \" + sum * 2)\n    }\n}",
+      "bugs": [
+        "Line 9: Loop condition uses <= instead of < — tries to access matrix[3][3] which does not exist, causing an ArrayIndexOutOfBoundsException.",
+        "Line 14: Divides by 4 to compute the average of the 3 diagonal elements, but there are only 3 elements — should divide by 3.",
+        "Line 15: Missing semicolon at the end of the println statement.",
+        "Line 3: The 2D array opening uses int[][] but the closing bracket of the outer array uses ] instead of } — mismatched brackets on the array literal.",
+        "Line 12: The string \"x\" between matrix.length and matrix[0].length will print something like '3x3', but if matrix were not square the two numbers could differ and the label would still say 'x' making it ambiguous.",
+        "Line 13: The string \"Matrix size: \" is missing its closing double quote — the string literal is not terminated.",
+        "Line 2: The method parameter is written as 'String args[]' instead of 'String[] args' — while technically valid in Java, it is the wrong style and many compilers and style checkers reject it."
+      ]
+    },
+
+    {
+      "id": 36,
+      "bugCount": 5,
+      "title": "Roman Numeral Converter",
+      "code": "public class RomanOnes {\n    public static void main(String[] args) {\n        int number = 8;\n        String roman = \"\";\n        while (number < 0) {\n            if (number >= 10) { roman += \"X\"; number -= 10; }\n            else if (number >= 9) { roman += \"IX\"; number -= 9; }\n            else if (number >= 5) { roman += \"V\"; number -= 5; }\n            else if (number >= 4) { roman += \"IV\"; number -= 4; }\n            else { roman += \"I\"; number -= 1; }\n        }\n        System.out.println(\"Roman: \" + roman);\n        System.out.println(\"Original number: \" + number);\n        System.out.println(\"Length of roman: \" + roman.length)\n    }\n}",
+      "bugs": [
+        "Line 5: While condition is number < 0 instead of number > 0 — since number starts at 8 the loop never runs and roman stays empty.",
+        "Line 14: Uses roman.length without parentheses — length is a method not a field, so this does not compile.",
+        "Line 14: Missing semicolon at the end of the println statement.",
+        "Line 4: The empty string \"\" assigned to roman is missing its closing double quote — the string literal is not properly closed.",
+        "Line 12: The println statement is missing its closing parenthesis ) — the method call is never closed."
+      ]
+    }
+  ]
+}

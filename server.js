@@ -1,3 +1,5 @@
+require('dotenv').config();
+
 /**
  * server.js — shared lobby infrastructure
  *
@@ -7,6 +9,8 @@
  * Each game mode registers its own socket handlers via:
  *   require('./modes/<name>/gameHandler').register(io, lobbies);
  */
+
+const { registerBugBlackjack, cleanupBugBlackjack } = require('./bugBlackjack');
 
 const express    = require('express');
 const http       = require('http');
@@ -120,9 +124,22 @@ io.on('connection', (socket) => {
     io.to(lobbyCode).emit('gameModeSelected', { mode });
   });
 
+  socket.on('startGame', () => {
+    const { lobbyCode } = socket.data;
+    const lobby = lobbies[lobbyCode];
+    if (!lobby || lobby.host !== socket.id || !lobby.gameMode) return;
+    io.to(lobbyCode).emit('gameStarted', { mode: lobby.gameMode });
+  });
+
+  // ── Bug Blackjack ────────────────────────────────────────────────────────────
+  registerBugBlackjack(io, socket, lobbies);
+
   // ── Leave Lobby ─────────────────────────────────────────────────────────────
-  socket.on('leaveLobby',  () => handleLeave(socket));
-  socket.on('disconnect',  () => handleLeave(socket));
+  socket.on('leaveLobby', () => handleLeave(socket));
+  socket.on('disconnect', () => {
+    handleLeave(socket);
+    cleanupBugBlackjack(socket.id);
+  });
 });
 
 // ── Handle Leave / Disconnect ─────────────────────────────────────────────────
