@@ -839,9 +839,9 @@
   ];
 
   const GAME_MODES = [
-    { id: 'skribbl',  name: 'Skribbl',      suit: '✏️', suitColor: '#60a5fa', desc: 'Draw & guess the word',    tag: 'classic'  },
+    { id: 'classic', name: 'Classic', suit: '✏️', suitColor: '#60a5fa', desc: 'Draw it, guess it', tag: 'classic' },
     { id: 'gartic',   name: 'Gartic Phone', suit: '📞', suitColor: '#f97316', desc: 'Telephone, but drawings',  tag: 'chaotic'  },
-    { id: 'bugjack',  name: 'Bug Blackjack',  suit: '🃏',  suitColor: '#ec4899', desc: "Hit 21 bugs, don't bust" },
+    { id: 'bugjack',  name: 'Bug Blackjack',  suit: '🃏',  suitColor: '#ec4899', desc: "Hit 21 bugs, don't bust", tag: 'strategy' },
   ];
 
   const socket = io();
@@ -1166,7 +1166,7 @@
         code: state.lobbyCode,
         host: state.isHost ? '1' : '0',
       });
-      window.location.href = `/classic?${params}`;
+      window.location.href = `http://localhost:3001?${params}`;
       return;
     }
     // Brief transition — writing screen comes from roundStarted

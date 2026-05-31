@@ -51,6 +51,32 @@ function recordCorrectGuess(game, socketId) {
 
 io.on('connection', (socket) => {
 
+  socket.on('classicRejoin', ({ code, username }) => {
+  console.log('classicRejoin:', code, username); // debug
+  let lobby = lobbies[code];
+
+  if (!lobby) {
+    // create fresh lobby with this code
+    lobbies[code] = {
+      host: socket.id,
+      players: [{ id: socket.id, name: username }]
+    };
+    lobby = lobbies[code];
+  } else {
+    // join existing
+    if (!lobby.players.find(p => p.name === username)) {
+      lobby.players.push({ id: socket.id, name: username });
+    }
+  }
+
+  socket.join(code);
+  socket.data.lobbyCode = code;
+  socket.data.username = username;
+
+  const isHost = lobby.host === socket.id;
+  socket.emit('classicRejoined', { isHost });
+});
+
   socket.on('createLobby', ({ username }) => {
     let code;
     do { code = generateCode(); } while (lobbies[code]);

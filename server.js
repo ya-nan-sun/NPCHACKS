@@ -17,7 +17,7 @@ const express    = require('express');
 const http       = require('http');
 const { Server } = require('socket.io');
 const path       = require('path');
-
+const { spawn } = require('child_process');
 const app    = express();
 const server = http.createServer(app);
 const io     = new Server(server);
@@ -49,6 +49,17 @@ require('./modes/exquisite-corpse/gameHandler').register(io, lobbies);
 registerClassic(io, lobbies);
 // require('./modes/speed-round/gameHandler').register(io, lobbies);
 // require('./modes/chaos/gameHandler').register(io, lobbies);
+
+const classicServer = spawn('node', ['server.js'], {
+  cwd: path.join(__dirname, 'modes/defaultgartic'),
+  stdio: 'inherit',
+});
+classicServer.on('error', (err) => {
+  console.error('Failed to start classic server:', err);
+});
+classicServer.on('spawn', () => {
+  console.log('Classic server spawned OK');
+});
 
 // ── Shared lobby events ───────────────────────────────────────────────────────
 io.on('connection', (socket) => {
