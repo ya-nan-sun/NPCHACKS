@@ -52,7 +52,6 @@ function recordCorrectGuess(game, socketId) {
 io.on('connection', (socket) => {
 
   socket.on('classicRejoin', ({ code, username }) => {
-  console.log('classicRejoin:', code, username); // debug
   let lobby = lobbies[code];
 
   if (!lobby) {
