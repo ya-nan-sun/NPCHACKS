@@ -371,13 +371,78 @@
       from { d: path("M6,3 Q20,-1 34,3 Q48,7 54,3 Q68,-1 94,3 L94,97 Q80,101 54,97 Q28,93 6,97 Z"); }
       to   { d: path("M6,3 Q20,7 34,3 Q48,-1 54,3 Q68,7 94,3 L94,97 Q80,93 54,97 Q28,101 6,97 Z"); }
     }
+    .spec-code {
+      font-family: 'JetBrains Mono', monospace;
+      font-size: 0.78rem;
+      color: #a5f3fc;
+      white-space: pre;
+      overflow-x: auto;
+      line-height: 1.6;
+    }
 
+    .code-editor {
+      width: 100%;
+      min-height: 160px;
+      background: #0a0a14;
+      border: 1px solid #2a2a4a;
+      border-radius: 10px;
+      color: #e8e8f0;
+      font-family: 'JetBrains Mono', monospace;
+      font-size: 0.85rem;
+      padding: 14px 16px;
+      outline: none;
+      resize: vertical;
+      line-height: 1.6;
+      transition: border-color 0.15s;
+      margin-bottom: 14px;
+    }
     .mode-inner {
       position: relative;
       padding: 14px 8px 12px;
       z-index: 1;
     }
+    .code-editor:focus { border-color: #7c3aed; }
 
+    .timer-bar-wrap {
+      background: #0a0a14;
+      border-radius: 6px;
+      height: 6px;
+      overflow: hidden;
+      margin-bottom: 14px;
+    }
+    .timer-bar {
+      height: 100%;
+      background: linear-gradient(90deg, #7c3aed, #3b82f6);
+      transition: width 1s linear, background 0.5s;
+      width: 100%;
+    }
+    .timer-bar.urgent { background: linear-gradient(90deg, #ef4444, #f97316); }
+
+    .submit-row {
+      display: flex;
+      align-items: center;
+      gap: 12px;}
+
+    .timer-text {
+      font-size: 0.85rem;
+      color: #6b7280;
+      white-space: nowrap;}
+    .timer-text.urgent { color: #ef4444; font-weight: 700; }
+
+    .submitted-badge {
+      display: inline-flex;
+      align-items: center;
+      gap: 6px;
+      background: #052e16;
+      border: 1px solid #15803d;
+      color: #86efac;
+      font-size: 0.85rem;
+      font-weight: 700;
+      padding: 10px 16px;
+      border-radius: 10px;
+      width: 100%;
+      justify-content: center;}
+    
     .mode-suit {
       font-size: 1.4rem;
       margin-bottom: 4px;
@@ -429,6 +494,13 @@
       letter-spacing: 0.08em;
       text-transform: uppercase;
     }
+    /* ── Waiting-for-others screen ── */
+    .progress-players {
+      display: flex;
+      flex-direction: column;
+      gap: 8px;
+      margin: 24px 0;
+    }
     .spinner {
       display: inline-block;
       width: 14px; height: 14px;
@@ -439,8 +511,40 @@
       vertical-align: middle;
       margin-right: 6px;
     }
+     .progress-player {
+      display: flex;
+      align-items: center;
+      gap: 10px;
+      background: #0f0f1a;
+      border: 1px solid #2a2a4a;
+      border-radius: 8px;
+      padding: 10px 14px;
+      font-size: 0.9rem;
+      transition: border-color 0.3s;
+    }
+    .progress-player.done { border-color: #15803d; }
+    .progress-status { font-size: 1rem; margin-left: auto; }
+    .big-spinner {
+      width: 48px;
+      height: 48px;
+      border: 3px solid #2a2a4a;
+      border-top-color: #7c3aed;}
+     .results-header {
+      text-align: center;
+      margin-bottom: 28px;
+      animation: spin 0.7s linear infinite;
+      vertical-align: middle;
+      margin-right: 6px;
+    }
+    .results-header .icon { font-size: 3rem; margin-bottom: 8px; }
     @keyframes spin { to { transform: rotate(360deg); } }
 
+    .submissions-list { display: flex; flex-direction: column; gap: 12px; margin-bottom: 24px; }
+    .submission-card {
+      background: #0f0f1a;
+      border: 1px solid #2a2a4a;
+      border-radius: 12px;
+      overflow: hidden;}
     /* ── GAME SCREEN ── */
     .game-banner { text-align: center; padding: 36px 12px; }
     .game-banner .big-icon {
@@ -450,6 +554,38 @@
       color: var(--lime);
       margin-bottom: 8px;
     }
+
+    .submission-header {
+      display: flex;
+      align-items: center;
+      gap: 10px;
+      padding: 10px 14px;
+      background: #0a0a14;
+      border-bottom: 1px solid #2a2a4a;
+    }
+    .submission-name { font-size: 0.85rem; font-weight: 700; }
+    .submission-code {
+      font-family: 'JetBrains Mono', monospace;
+      font-size: 0.78rem;
+      color: #c4b5fd;
+      padding: 12px 14px;
+      white-space: pre;
+      overflow-x: auto;
+      line-height: 1.6;
+    }
+
+    .output-box {
+      background: #0a0a14;
+      border: 1px solid #2a2a4a;
+      border-radius: 12px;
+      padding: 16px;
+      margin-bottom: 20px;}
+      .output-label {
+      font-size: 0.75rem;
+      font-weight: 700;
+      color: #6b7280;}
+
+    
     .game-banner h2 { margin-bottom: 6px; }
     .game-banner p { color: var(--muted); font-size: 0.75rem; letter-spacing: 0.1em; text-transform: uppercase; margin-bottom: 20px; }
     .mode-pill {
@@ -473,6 +609,26 @@
       overflow: hidden;
       white-space: nowrap;
     }
+    output-lines { display: flex; flex-direction: column; gap: 4px; }
+    .output-line {
+      font-family: 'JetBrains Mono', monospace;
+      font-size: 0.82rem;
+      color: #86efac;
+      padding: 3px 0;
+      border-bottom: 1px solid #1a1a2e;
+    }
+    .output-error {
+      font-family: 'JetBrains Mono', monospace;
+      font-size: 0.85rem;
+      color: #fca5a5;
+      background: #450a0a;
+      border-radius: 8px;
+      padding: 10px 12px;
+      margin-bottom: 24px;
+      overflow: hidden;
+      white-space: nowrap;
+    }
+    .output-empty { font-size: 0.85rem; color: #4b5563; font-style: italic; }
 
     /* ── TOAST ── */
     .toast {
