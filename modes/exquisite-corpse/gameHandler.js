@@ -19,8 +19,7 @@ function register(io, lobbies) {
       const { lobbyCode } = socket.data;
       const lobby = lobbies[lobbyCode];
       if (!lobby || lobby.host !== socket.id || !lobby.gameMode) return;
-      if (lobby.gameMode !== 'team') return; // only handle our mode
-
+      if (lobby.gameMode !== 'exquisite') return; // only handle our mode
       const humanCount = lobby.players.length;
       const NPC_COUNT  = humanCount === 1 ? 1 : 0;
 
