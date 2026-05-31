@@ -648,19 +648,25 @@ function initEditor(readOnly) {
 
 // ── Auto-rejoin from root lobby URL params ─────────────────────────────────
 
-(function autoRejoin() {
+// Parse params immediately but emit only after socket connects
+const _rejoinParams = (() => {
   const params = new URLSearchParams(location.search);
-  const username = params.get('username');
-  const code = params.get('code');
-  if (!username || !code) {
-    showErr(document.getElementById('loading-error'), 'Missing game parameters. Please return to the lobby.');
-    return;
-  }
-  state.username = username;
-  state.lobbyCode = code;
-  document.getElementById('loading-msg').textContent = `Joining as ${username}…`;
-  socket.emit('classicRejoin', { code, username });
+  return { username: params.get('username'), code: params.get('code') };
 })();
+
+if (!_rejoinParams.username || !_rejoinParams.code) {
+  showErr(document.getElementById('loading-error'), 'Missing game parameters. Please return to the lobby.');
+} else {
+  state.username = _rejoinParams.username;
+  state.lobbyCode = _rejoinParams.code;
+  document.getElementById('loading-msg').textContent = `Joining as ${_rejoinParams.username}…`;
+}
+
+socket.on('connect', () => {
+  if (!_rejoinParams.username || !_rejoinParams.code) return;
+  console.log('socket connected, emitting classicRejoin', _rejoinParams);
+  socket.emit('classicRejoin', { code: _rejoinParams.code, username: _rejoinParams.username });
+});
 
 // ── Game: round start ──────────────────────────────────────────────────────
 

@@ -127,8 +127,11 @@ function startClassicGame(lobbyCode, lobby) {
   // Timeout: start round even if not all players navigated in time
   const rejoinTimeout = setTimeout(() => {
     const game = games[lobbyCode];
-    if (game && game.phase === 'waiting') startRound(lobbyCode);
-  }, 15000);
+    if (game && game.phase === 'waiting') {
+      console.log(`[classic] timeout fired for ${lobbyCode} — starting with ${game.players.length} players`);
+      startRound(lobbyCode);
+    }
+  }, 5000);
 
   games[lobbyCode] = {
     phase: 'waiting',
@@ -184,11 +187,13 @@ function register(io, lobbies) {
   _io = io;
 
   io.on('connection', (socket) => {
+    console.log(`[classic] new socket connected: ${socket.id}`);
 
     // Players arrive at /classic page with URL params and rejoin here
     socket.on('classicRejoin', ({ code, username }) => {
       const game = games[code];
       const lobby = lobbies[code];
+      console.log(`[classic] classicRejoin: code=${code} username=${username} game=${!!game} lobby=${!!lobby}`);
       if (!game || !lobby) {
         socket.emit('classicRejoinError', { message: 'Game not found.' });
         return;
@@ -196,6 +201,7 @@ function register(io, lobbies) {
 
       // Find player by username and remap to new socket ID
       const player = game.players.find(p => p.name === username);
+      console.log(`[classic] player found: ${!!player} | players: ${JSON.stringify(game.players.map(p => p.name))} | rejoinedCount before: ${game.rejoinedCount}`);
       if (!player) {
         socket.emit('classicRejoinError', { message: 'Player not found in this game.' });
         return;
@@ -228,7 +234,9 @@ function register(io, lobbies) {
 
       // Start first round once everyone is in (or after timeout)
       game.rejoinedCount = (game.rejoinedCount || 0) + 1;
+      console.log(`[classic] rejoinedCount=${game.rejoinedCount} / ${game.players.length}`);
       if (game.phase === 'waiting' && game.rejoinedCount >= game.players.length) {
+        console.log(`[classic] all players rejoined — starting round`);
         clearTimeout(game.rejoinTimeout);
         startRound(code);
       }

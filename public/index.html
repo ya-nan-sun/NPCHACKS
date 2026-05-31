@@ -1166,7 +1166,7 @@
         code: state.lobbyCode,
         host: state.isHost ? '1' : '0',
       });
-      window.location.href = `http://localhost:3001?${params}`;
+      window.location.href = `/classic?${params}`;
       return;
     }
     // Brief transition — writing screen comes from roundStarted
@@ -1314,4 +1314,3 @@
   });
 </script>
 </body>
-</html>
