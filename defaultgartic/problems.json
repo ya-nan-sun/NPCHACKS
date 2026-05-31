@@ -1,0 +1,122 @@
+[
+  {
+    "id": "1",
+    "name": "Two Sum",
+    "slug": "two-sum",
+    "difficulty": "Easy",
+    "tags": ["Array", "Hash Map"],
+    "hint": "Find two numbers in an array that add up to a target value and return their indices",
+    "description": "Given an array of integers nums and an integer target, return indices of the two numbers such that they add up to target.\n\nYou may assume that each input would have exactly one solution, and you may not use the same element twice. You can return the answer in any order.\n\nExample:\n  Input:  nums = [2,7,11,15], target = 9\n  Output: [0,1]\n\nConstraints:\n  2 ≤ nums.length ≤ 10⁴\n  Each input has exactly one solution.",
+    "solution": "var twoSum = function(nums, target) {\n    const map = new Map();\n    for (let i = 0; i < nums.length; i++) {\n        const complement = target - nums[i];\n        if (map.has(complement)) return [map.get(complement), i];\n        map.set(nums[i], i);\n    }\n};"
+  },
+  {
+    "id": "20",
+    "name": "Valid Parentheses",
+    "slug": "valid-parentheses",
+    "difficulty": "Easy",
+    "tags": ["String", "Stack"],
+    "hint": "Check whether every opening bracket in a string is closed in the correct order",
+    "description": "Given a string s containing just the characters '(', ')', '{', '}', '[' and ']', determine if the input string is valid.\n\nAn input string is valid if:\n  1. Open brackets must be closed by the same type of brackets.\n  2. Open brackets must be closed in the correct order.\n  3. Every close bracket has a corresponding open bracket.\n\nExample:\n  Input:  s = \"()[]{}\"\n  Output: true\n\n  Input:  s = \"(]\"\n  Output: false",
+    "solution": "var isValid = function(s) {\n    const stack = [];\n    const map = { ')': '(', '}': '{', ']': '[' };\n    for (const ch of s) {\n        if ('([{'.includes(ch)) {\n            stack.push(ch);\n        } else {\n            if (stack.pop() !== map[ch]) return false;\n        }\n    }\n    return stack.length === 0;\n};"
+  },
+  {
+    "id": "70",
+    "name": "Climbing Stairs",
+    "slug": "climbing-stairs",
+    "difficulty": "Easy",
+    "tags": ["Dynamic Programming", "Fibonacci"],
+    "hint": "Count how many distinct ways you can reach the top of a staircase taking 1 or 2 steps at a time",
+    "description": "You are climbing a staircase. It takes n steps to reach the top.\n\nEach time you can either climb 1 or 2 steps. In how many distinct ways can you climb to the top?\n\nExample:\n  Input:  n = 3\n  Output: 3\n  Explanation: 1+1+1, 1+2, 2+1\n\nConstraints:\n  1 ≤ n ≤ 45",
+    "solution": "var climbStairs = function(n) {\n    if (n <= 2) return n;\n    let prev = 1, curr = 2;\n    for (let i = 3; i <= n; i++) {\n        [prev, curr] = [curr, prev + curr];\n    }\n    return curr;\n};"
+  },
+  {
+    "id": "121",
+    "name": "Best Time to Buy and Sell Stock",
+    "slug": "best-time-to-buy-and-sell-stock",
+    "difficulty": "Easy",
+    "tags": ["Array", "Greedy"],
+    "hint": "Find the maximum profit from a single buy and sell given daily stock prices",
+    "description": "You are given an array prices where prices[i] is the price of a given stock on the ith day.\n\nYou want to maximize your profit by choosing a single day to buy one stock and choosing a different day in the future to sell that stock.\n\nReturn the maximum profit you can achieve. If you cannot achieve any profit, return 0.\n\nExample:\n  Input:  prices = [7,1,5,3,6,4]\n  Output: 5\n  Explanation: Buy on day 2 (price=1), sell on day 5 (price=6).",
+    "solution": "var maxProfit = function(prices) {\n    let minPrice = Infinity;\n    let maxProfit = 0;\n    for (const price of prices) {\n        minPrice = Math.min(minPrice, price);\n        maxProfit = Math.max(maxProfit, price - minPrice);\n    }\n    return maxProfit;\n};"
+  },
+  {
+    "id": "53",
+    "name": "Maximum Subarray",
+    "slug": "maximum-subarray",
+    "difficulty": "Medium",
+    "tags": ["Array", "Dynamic Programming", "Divide and Conquer"],
+    "hint": "Find the contiguous subarray within an array that has the largest sum",
+    "description": "Given an integer array nums, find the subarray with the largest sum, and return its sum.\n\nExample:\n  Input:  nums = [-2,1,-3,4,-1,2,1,-5,4]\n  Output: 6\n  Explanation: The subarray [4,-1,2,1] has the largest sum 6.\n\nConstraints:\n  1 ≤ nums.length ≤ 10⁵",
+    "solution": "var maxSubArray = function(nums) {\n    let maxSum = nums[0];\n    let currentSum = nums[0];\n    for (let i = 1; i < nums.length; i++) {\n        currentSum = Math.max(nums[i], currentSum + nums[i]);\n        maxSum = Math.max(maxSum, currentSum);\n    }\n    return maxSum;\n};"
+  },
+  {
+    "id": "3",
+    "name": "Longest Substring Without Repeating Characters",
+    "slug": "longest-substring-without-repeating-characters",
+    "difficulty": "Medium",
+    "tags": ["Hash Map", "Sliding Window", "String"],
+    "hint": "Find the length of the longest substring in which no character appears more than once",
+    "description": "Given a string s, find the length of the longest substring without repeating characters.\n\nExample:\n  Input:  s = \"abcabcbb\"\n  Output: 3\n  Explanation: The answer is \"abc\", with the length of 3.\n\n  Input:  s = \"pwwkew\"\n  Output: 3\n  Explanation: \"wke\" has length 3.\n\nConstraints:\n  0 ≤ s.length ≤ 5 × 10⁴",
+    "solution": "var lengthOfLongestSubstring = function(s) {\n    const seen = new Map();\n    let left = 0, maxLen = 0;\n    for (let right = 0; right < s.length; right++) {\n        if (seen.has(s[right]) && seen.get(s[right]) >= left) {\n            left = seen.get(s[right]) + 1;\n        }\n        seen.set(s[right], right);\n        maxLen = Math.max(maxLen, right - left + 1);\n    }\n    return maxLen;\n};"
+  },
+  {
+    "id": "238",
+    "name": "Product of Array Except Self",
+    "slug": "product-of-array-except-self",
+    "difficulty": "Medium",
+    "tags": ["Array", "Prefix Sum"],
+    "hint": "For each element in an array, compute the product of all other elements without using division",
+    "description": "Given an integer array nums, return an array answer such that answer[i] is equal to the product of all the elements of nums except nums[i].\n\nThe product of any prefix or suffix of nums is guaranteed to fit in a 32-bit integer.\n\nYou must write an algorithm that runs in O(n) time and without using the division operation.\n\nExample:\n  Input:  nums = [1,2,3,4]\n  Output: [24,12,8,6]",
+    "solution": "var productExceptSelf = function(nums) {\n    const n = nums.length;\n    const result = new Array(n).fill(1);\n    let prefix = 1;\n    for (let i = 0; i < n; i++) {\n        result[i] = prefix;\n        prefix *= nums[i];\n    }\n    let suffix = 1;\n    for (let i = n - 1; i >= 0; i--) {\n        result[i] *= suffix;\n        suffix *= nums[i];\n    }\n    return result;\n};"
+  },
+  {
+    "id": "200",
+    "name": "Number of Islands",
+    "slug": "number-of-islands",
+    "difficulty": "Medium",
+    "tags": ["BFS", "DFS", "Graph", "Matrix"],
+    "hint": "Count the number of connected groups of land cells in a 2D grid of land and water",
+    "description": "Given an m x n 2D binary grid which represents a map of '1's (land) and '0's (water), return the number of islands.\n\nAn island is surrounded by water and is formed by connecting adjacent lands horizontally or vertically.\n\nExample:\n  Input:\n    grid = [\n      [\"1\",\"1\",\"0\",\"0\"],\n      [\"1\",\"1\",\"0\",\"0\"],\n      [\"0\",\"0\",\"1\",\"0\"],\n      [\"0\",\"0\",\"0\",\"1\"]\n    ]\n  Output: 3",
+    "solution": "var numIslands = function(grid) {\n    let count = 0;\n    function dfs(r, c) {\n        if (r < 0 || r >= grid.length || c < 0 || c >= grid[0].length || grid[r][c] !== '1') return;\n        grid[r][c] = '0';\n        dfs(r+1,c); dfs(r-1,c); dfs(r,c+1); dfs(r,c-1);\n    }\n    for (let r = 0; r < grid.length; r++) {\n        for (let c = 0; c < grid[0].length; c++) {\n            if (grid[r][c] === '1') { count++; dfs(r, c); }\n        }\n    }\n    return count;\n};"
+  },
+  {
+    "id": "322",
+    "name": "Coin Change",
+    "slug": "coin-change",
+    "difficulty": "Medium",
+    "tags": ["Dynamic Programming", "BFS"],
+    "hint": "Find the minimum number of coins needed to make up a target amount",
+    "description": "You are given an integer array coins representing coins of different denominations and an integer amount representing a total amount of money.\n\nReturn the fewest number of coins that you need to make up that amount. If that amount of money cannot be made up by any combination of the coins, return -1.\n\nExample:\n  Input:  coins = [1,5,11], amount = 11\n  Output: 1\n\n  Input:  coins = [2], amount = 3\n  Output: -1",
+    "solution": "var coinChange = function(coins, amount) {\n    const dp = new Array(amount + 1).fill(Infinity);\n    dp[0] = 0;\n    for (let i = 1; i <= amount; i++) {\n        for (const coin of coins) {\n            if (coin <= i) dp[i] = Math.min(dp[i], dp[i - coin] + 1);\n        }\n    }\n    return dp[amount] === Infinity ? -1 : dp[amount];\n};"
+  },
+  {
+    "id": "56",
+    "name": "Merge Intervals",
+    "slug": "merge-intervals",
+    "difficulty": "Medium",
+    "tags": ["Array", "Sorting"],
+    "hint": "Combine all overlapping intervals into the smallest set of non-overlapping intervals",
+    "description": "Given an array of intervals where intervals[i] = [starti, endi], merge all overlapping intervals, and return an array of the non-overlapping intervals that cover all the intervals in the input.\n\nExample:\n  Input:  intervals = [[1,3],[2,6],[8,10],[15,18]]\n  Output: [[1,6],[8,10],[15,18]]\n  Explanation: [1,3] and [2,6] overlap, merged to [1,6].",
+    "solution": "var merge = function(intervals) {\n    intervals.sort((a, b) => a[0] - b[0]);\n    const result = [intervals[0]];\n    for (let i = 1; i < intervals.length; i++) {\n        const last = result[result.length - 1];\n        if (intervals[i][0] <= last[1]) {\n            last[1] = Math.max(last[1], intervals[i][1]);\n        } else {\n            result.push(intervals[i]);\n        }\n    }\n    return result;\n};"
+  },
+  {
+    "id": "347",
+    "name": "Top K Frequent Elements",
+    "slug": "top-k-frequent-elements",
+    "difficulty": "Medium",
+    "tags": ["Array", "Hash Map", "Heap", "Bucket Sort"],
+    "hint": "Return the K elements that appear most frequently in an array",
+    "description": "Given an integer array nums and an integer k, return the k most frequent elements. You may return the answer in any order.\n\nExample:\n  Input:  nums = [1,1,1,2,2,3], k = 2\n  Output: [1,2]\n\nConstraints:\n  1 ≤ k ≤ number of unique elements\n  Answer is guaranteed to be unique.",
+    "solution": "var topKFrequent = function(nums, k) {\n    const freq = new Map();\n    for (const n of nums) freq.set(n, (freq.get(n) || 0) + 1);\n    const buckets = Array.from({ length: nums.length + 1 }, () => []);\n    for (const [num, count] of freq) buckets[count].push(num);\n    const result = [];\n    for (let i = buckets.length - 1; i >= 0 && result.length < k; i--) {\n        result.push(...buckets[i]);\n    }\n    return result.slice(0, k);\n};"
+  },
+  {
+    "id": "139",
+    "name": "Word Break",
+    "slug": "word-break",
+    "difficulty": "Medium",
+    "tags": ["Dynamic Programming", "Trie", "Hash Set"],
+    "hint": "Determine whether a string can be segmented into words that all exist in a given dictionary",
+    "description": "Given a string s and a dictionary of strings wordDict, return true if s can be segmented into a space-separated sequence of one or more dictionary words.\n\nNote: The same word in the dictionary may be reused multiple times in the segmentation.\n\nExample:\n  Input:  s = \"leetcode\", wordDict = [\"leet\",\"code\"]\n  Output: true\n\n  Input:  s = \"applepenapple\", wordDict = [\"apple\",\"pen\"]\n  Output: true",
+    "solution": "var wordBreak = function(s, wordDict) {\n    const set = new Set(wordDict);\n    const dp = new Array(s.length + 1).fill(false);\n    dp[0] = true;\n    for (let i = 1; i <= s.length; i++) {\n        for (let j = 0; j < i; j++) {\n            if (dp[j] && set.has(s.slice(j, i))) {\n                dp[i] = true;\n                break;\n            }\n        }\n    }\n    return dp[s.length];\n};"
+  }
+]
